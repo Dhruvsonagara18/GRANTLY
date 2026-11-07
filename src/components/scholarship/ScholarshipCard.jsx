@@ -7,7 +7,9 @@ import {
   CheckCircle2,
   AlertTriangle,
   XCircle,
-  ArrowRight
+  ArrowRight,
+  ShieldCheck,
+  ExternalLink
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import EligibilityBreakdownModal from './EligibilityBreakdownModal';
@@ -28,25 +30,26 @@ export default function ScholarshipCard({ scholarship, viewMode = 'grid' }) {
 
   const { eligibility, deadlineInfo } = scholarship;
   const score = eligibility?.score ?? 0;
+  const verdict = eligibility?.verdict || (score >= 75 ? 'Eligible' : score >= 50 ? 'Potentially Eligible' : 'Not Eligible');
 
-  // Match indicator badge styling
+  // Match indicator badge styling based on clinical verdict
   let badgeTheme = {
     bg: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800',
     icon: CheckCircle2,
-    text: 'Likely Match'
+    text: 'Eligible'
   };
 
-  if (score < 50) {
+  if (verdict === 'Not Eligible' || score < 50) {
     badgeTheme = {
       bg: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800',
       icon: XCircle,
-      text: 'Low Match'
+      text: 'Not Eligible'
     };
-  } else if (score < 80) {
+  } else if (verdict === 'Potentially Eligible' || score < 75) {
     badgeTheme = {
       bg: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800',
       icon: AlertTriangle,
-      text: 'Needs Verification'
+      text: 'Potentially Eligible'
     };
   }
 
@@ -59,10 +62,27 @@ export default function ScholarshipCard({ scholarship, viewMode = 'grid' }) {
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2 mb-2">
-                <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${badgeTheme.bg}`}>
+                <button
+                  type="button"
+                  onClick={() => setShowEligibilityModal(true)}
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-transform hover:scale-105 cursor-pointer ${badgeTheme.bg}`}
+                  title="Click to view full criteria breakdown"
+                >
                   <StatusIcon className="w-3.5 h-3.5" />
-                  <span>{score}% — {badgeTheme.text}</span>
-                </span>
+                  <span>{badgeTheme.text} ({score}% Compat)</span>
+                </button>
+
+                {scholarship.isVerified ? (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                    <ShieldCheck className="w-3 h-3" />
+                    <span>Verified Source</span>
+                  </span>
+                ) : (
+                  <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                    Sample Benchmark
+                  </span>
+                )}
+
                 <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                   {scholarship.category}
                 </span>
@@ -76,27 +96,22 @@ export default function ScholarshipCard({ scholarship, viewMode = 'grid' }) {
                 )}
               </div>
 
-              <Link to={`/scholarship/${scholarship.id}`} className="group">
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+              <Link to={`/scholarship/${scholarship.id}`} className="block group">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
                   {scholarship.title}
                 </h3>
               </Link>
 
-              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-1">
+              <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-1">
                 <Building className="w-3.5 h-3.5 text-slate-400" />
                 <span>{scholarship.organization}</span>
-              </div>
+              </p>
             </div>
 
-            {/* Right Meta & Actions */}
-            <div className="flex flex-wrap items-center gap-4 lg:gap-6 justify-between lg:justify-end border-t lg:border-t-0 pt-3 lg:pt-0 border-slate-100 dark:border-slate-800">
-              <div>
-                <p className="text-[11px] text-slate-400 font-medium">Award Amount</p>
-                <p className="text-base font-extrabold text-brand-700 dark:text-brand-400">{scholarship.amount}</p>
-              </div>
-
-              <div>
-                <p className="text-[11px] text-slate-400 font-medium">Application Deadline</p>
+            {/* Right Meta Column */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 lg:gap-6 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-slate-100 dark:border-slate-800">
+              <div className="text-left sm:text-right">
+                <p className="text-sm font-extrabold text-brand-700 dark:text-brand-400">{scholarship.amount}</p>
                 <p className={`text-xs font-semibold ${deadlineInfo?.isUrgent ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-700 dark:text-slate-300'}`}>
                   {deadlineInfo?.formattedDate} ({deadlineInfo?.label})
                 </p>
@@ -104,8 +119,9 @@ export default function ScholarshipCard({ scholarship, viewMode = 'grid' }) {
 
               <div className="flex items-center gap-2">
                 <button
+                  type="button"
                   onClick={() => toggleSaveScholarship(scholarship.id)}
-                  className={`p-2 rounded-xl border transition-colors ${
+                  className={`p-2 rounded-xl border transition-colors cursor-pointer ${
                     saved
                       ? 'bg-brand-50 dark:bg-brand-950/80 border-brand-300 dark:border-brand-700 text-brand-600 dark:text-brand-400'
                       : 'border-slate-200 dark:border-slate-700 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
@@ -116,8 +132,9 @@ export default function ScholarshipCard({ scholarship, viewMode = 'grid' }) {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => compared ? removeFromCompare(scholarship.id) : addToCompare(scholarship.id)}
-                  className={`p-2 rounded-xl border transition-colors ${
+                  className={`p-2 rounded-xl border transition-colors cursor-pointer ${
                     compared
                       ? 'bg-indigo-50 dark:bg-indigo-950/80 border-indigo-300 dark:border-indigo-700 text-indigo-600 dark:text-indigo-400'
                       : 'border-slate-200 dark:border-slate-700 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
@@ -128,8 +145,9 @@ export default function ScholarshipCard({ scholarship, viewMode = 'grid' }) {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => setShowEligibilityModal(true)}
-                  className="px-3 py-1.5 text-xs font-medium text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/60 hover:bg-brand-100 dark:hover:bg-brand-900/60 border border-brand-200 dark:border-brand-800 rounded-xl transition-colors"
+                  className="px-3 py-1.5 text-xs font-medium text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/60 hover:bg-brand-100 dark:hover:bg-brand-900/60 border border-brand-200 dark:border-brand-800 rounded-xl transition-colors cursor-pointer"
                 >
                   Eligibility Details
                 </button>
@@ -164,18 +182,20 @@ export default function ScholarshipCard({ scholarship, viewMode = 'grid' }) {
         <div>
           <div className="flex items-center justify-between gap-2 mb-3">
             <button
+              type="button"
               onClick={() => setShowEligibilityModal(true)}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border transition-transform hover:scale-105 ${badgeTheme.bg}`}
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border transition-transform hover:scale-105 cursor-pointer ${badgeTheme.bg}`}
               title="Click to view criteria breakdown"
             >
               <StatusIcon className="w-3.5 h-3.5 shrink-0" />
-              <span>{score}% Match</span>
+              <span>{badgeTheme.text}</span>
             </button>
 
             <div className="flex items-center gap-1">
               <button
+                type="button"
                 onClick={() => compared ? removeFromCompare(scholarship.id) : addToCompare(scholarship.id)}
-                className={`p-1.5 rounded-lg border transition-colors ${
+                className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
                   compared
                     ? 'bg-indigo-50 dark:bg-indigo-950/80 border-indigo-300 dark:border-indigo-700 text-indigo-600 dark:text-indigo-400'
                     : 'border-slate-200 dark:border-slate-700 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
@@ -186,8 +206,9 @@ export default function ScholarshipCard({ scholarship, viewMode = 'grid' }) {
               </button>
 
               <button
+                type="button"
                 onClick={() => toggleSaveScholarship(scholarship.id)}
-                className={`p-1.5 rounded-lg border transition-colors ${
+                className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
                   saved
                     ? 'bg-brand-50 dark:bg-brand-950/80 border-brand-300 dark:border-brand-700 text-brand-600 dark:text-brand-400'
                     : 'border-slate-200 dark:border-slate-700 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
@@ -215,8 +236,18 @@ export default function ScholarshipCard({ scholarship, viewMode = 'grid' }) {
             {scholarship.description}
           </p>
 
-          {/* Tags */}
+          {/* Tags & Verification Status */}
           <div className="flex flex-wrap gap-1.5 mb-4">
+            {scholarship.isVerified ? (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                <ShieldCheck className="w-3 h-3" />
+                <span>Verified</span>
+              </span>
+            ) : (
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                Sample
+              </span>
+            )}
             <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
               {scholarship.category}
             </span>
@@ -246,14 +277,15 @@ export default function ScholarshipCard({ scholarship, viewMode = 'grid' }) {
 
           <div className="grid grid-cols-2 gap-2">
             <button
+              type="button"
               onClick={() => setShowEligibilityModal(true)}
-              className="w-full py-2 px-2 text-center text-xs font-semibold text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/60 hover:bg-brand-100 dark:hover:bg-brand-900/60 border border-brand-200 dark:border-brand-800 rounded-xl transition-colors"
+              className="w-full py-2 px-2 text-center text-xs font-semibold text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/60 hover:bg-brand-100 dark:hover:bg-brand-900/60 border border-brand-200 dark:border-brand-800 rounded-xl transition-colors cursor-pointer"
             >
               Check Fit
             </button>
             <Link
               to={`/scholarship/${scholarship.id}`}
-              className="w-full py-2 px-2 text-center text-xs font-semibold text-white bg-slate-900 hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-500 rounded-xl transition-colors flex items-center justify-center gap-1"
+              className="w-full py-2 px-2 text-center text-xs font-semibold text-white bg-slate-900 hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-500 rounded-xl transition-colors flex items-center justify-center gap-1 cursor-pointer"
             >
               <span>View Details</span>
               <ArrowRight className="w-3.5 h-3.5" />

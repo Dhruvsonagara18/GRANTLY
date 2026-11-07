@@ -1,13 +1,18 @@
 /**
  * Centralized User Profile and Pre-seeded Opportunity State for GRANTLY
  * Default user: Dhruv Sonagara (Dwarka, Gujarat, India)
+ *
+ * Designed with a clean first-time user experience:
+ * - No fake submitted applications or fictional acknowledgement numbers.
+ * - Meaningful empty states guiding the user to Explore and Complete Profile.
+ * - Real document checklist templates with "Not Uploaded" default statuses.
  */
 
 export const INITIAL_USER_PROFILE = {
   id: "usr-dhruv-01",
   name: "Dhruv Sonagara",
   email: "dhruv.sonagara@grantly.edu",
-  avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200&auto=format&fit=crop&q=80",
+  avatar: null, // Default avatar falls back to user initials "DS" or uploaded photo
   phone: "+91 98250 12345",
   gender: "Male",
   city: "Dwarka",
@@ -16,7 +21,7 @@ export const INITIAL_USER_PROFILE = {
   education: {
     level: "Undergraduate",
     degree: "B.Tech in Computer Engineering",
-    institution: "Government Engineering College, Gujarat (GTU)",
+    institution: "Government Engineering College (GTU)",
     year: "3rd Year",
     expectedGraduation: "2027",
     specialization: "Software Systems & Cloud Architecture"
@@ -44,124 +49,90 @@ export const INITIAL_USER_PROFILE = {
     targetDeadlineMonths: ["November", "December", "January"]
   },
   onboardingCompleted: true,
-  createdAt: "2026-10-15T09:00:00Z"
+  createdAt: "2026-11-01T09:00:00Z"
 };
 
-// Alias for backward compatibility if imported elsewhere
+// Alias for backward compatibility
 export const INITIAL_DEMO_USER = INITIAL_USER_PROFILE;
 
+// Clean initial watchlist: Starts clean or with top matching Gujarat schemes saved
 export const INITIAL_SAVED_SCHOLARSHIPS = [
-  "sch-004", // MYSY Gujarat
-  "sch-001", // Apex STEM
-  "sch-002", // Pragati National Grant
-  "sch-007"  // NextGen Software Engineers
+  "sch-004", // Mukhyamantri Yuva Swavalamban Yojana (MYSY - Gujarat)
+  "sch-001"  // Reliance Foundation Undergraduate Scholarship
 ];
 
-export const INITIAL_APPLICATIONS = [
+// Clean initial applications pipeline: No fake submitted applications or fictional acknowledgement numbers
+export const INITIAL_APPLICATIONS = [];
+
+// Sample applications preview dataset that can be loaded voluntarily for evaluation
+export const SAMPLE_APPLICATIONS_PREVIEW = [
   {
-    id: "app-101",
+    id: "sample-app-1",
     scholarshipId: "sch-004",
     scholarshipTitle: "Mukhyamantri Yuva Swavalamban Yojana (MYSY - Gujarat)",
     organization: "Education Department, Government of Gujarat",
-    awardAmount: "₹1,00,000 / year",
-    amountValue: 100000,
-    status: "Under Review",
-    appliedDate: "2026-10-28",
-    targetSubmitDate: "2026-10-28",
-    deadline: "2026-11-15",
-    notes: "Applied via MYSY state portal. Institute scrutiny cleared; awaiting nodal officer disbursement authorization.",
-    progressPercent: 90,
-    timeline: [
-      { date: "2026-10-15", title: "Discovered Opportunity", description: "Identified via Gujarat state quota matching (100% Match)" },
-      { date: "2026-10-20", title: "Eligibility Confirmed", description: "Verified 8.6 CGPA & Gujarat domicile certificate" },
-      { date: "2026-10-28", title: "Application Submitted", description: "Uploaded documents on MYSY Gujarat portal" },
-      { date: "2026-11-03", title: "College Verified", description: "GEC Principal desk approved certificate scrutiny" }
-    ]
-  },
-  {
-    id: "app-102",
-    scholarshipId: "sch-001",
-    scholarshipTitle: "Apex STEM Future Leaders Fellowship",
-    organization: "Global Technology Foundation",
-    awardAmount: "₹2,50,000 / year",
-    amountValue: 250000,
+    awardAmount: "Up to ₹2,00,000 / year",
+    amountValue: 200000,
     status: "Preparing Documents",
     appliedDate: null,
-    targetSubmitDate: "2026-11-09",
-    deadline: "2026-11-10",
-    notes: "Need to attach faculty recommendation letter and finalize Statement of Purpose.",
-    progressPercent: 75,
+    targetSubmitDate: "2026-11-12",
+    deadline: "2026-11-15",
+    notes: "Gathering Mamlatdar income certificate and college admission fee receipts. (Sample tracker entry)",
+    progressPercent: 40,
+    isSample: true,
     timeline: [
-      { date: "2026-10-20", title: "Discovered Opportunity", description: "Smart Match compatibility 96%" },
-      { date: "2026-10-25", title: "Eligibility Confirmed", description: "Satisfies CGPA 8.6 vs required 8.2" },
-      { date: "2026-11-02", title: "Document Checklist Initiated", description: "Uploaded academic marksheets and portfolio draft" }
+      { date: "2026-11-01", title: "Discovered Opportunity", description: "Matched Gujarat domicile criteria (Sample data)" },
+      { date: "2026-11-03", title: "Tracked in Planner", description: "Created document checklist (Sample data)" }
     ]
   },
   {
-    id: "app-103",
-    scholarshipId: "sch-002",
-    scholarshipTitle: "Pragati National Need-Cum-Merit Support Grant",
-    organization: "Ministry of Education & Human Resources",
-    awardAmount: "₹1,20,000 / year",
-    amountValue: 120000,
-    status: "Applied",
-    appliedDate: "2026-11-01",
-    targetSubmitDate: "2026-11-01",
-    deadline: "2026-11-13",
-    notes: "Submitted on National Scholarship Portal. Acknowledgement #NSP-2026-88192.",
-    progressPercent: 85,
-    timeline: [
-      { date: "2026-10-18", title: "Discovered", description: "National quota compatibility" },
-      { date: "2026-10-24", title: "Documents Ready", description: "Income certificate verified" },
-      { date: "2026-11-01", title: "Application Submitted", description: "Application registered on NSP portal" }
-    ]
-  },
-  {
-    id: "app-104",
-    scholarshipId: "sch-007",
-    scholarshipTitle: "NextGen Software Engineers Excellence Award",
-    organization: "Silicon Edge Foundation & Tech Giants Alliance",
-    awardAmount: "₹1,80,000 / year",
-    amountValue: 180000,
+    id: "sample-app-2",
+    scholarshipId: "sch-001",
+    scholarshipTitle: "Reliance Foundation Undergraduate Scholarship",
+    organization: "Reliance Foundation",
+    awardAmount: "Up to ₹2,00,000",
+    amountValue: 200000,
     status: "Interested",
     appliedDate: null,
-    targetSubmitDate: "2026-11-11",
-    deadline: "2026-11-12",
-    notes: "Review coding assessment questions before initiating formal application.",
-    progressPercent: 25,
+    targetSubmitDate: "2026-11-14",
+    deadline: "2026-11-15",
+    notes: "Reviewing eligibility criteria for online aptitude test. (Sample tracker entry)",
+    progressPercent: 20,
+    isSample: true,
     timeline: [
-      { date: "2026-11-03", title: "Saved to Watchlist", description: "Tracked for software engineering priority" }
+      { date: "2026-11-02", title: "Added to Tracker", description: "Tracked for private merit-cum-means quota (Sample data)" }
     ]
   }
 ];
 
+// Standard document locker with realistic un-verified/pending statuses
 export const INITIAL_DOCUMENTS = [
   {
     id: "doc-1",
     name: "Latest Semester Marksheet (Sem 4 / 5)",
     type: "Academic",
     status: "Ready",
-    lastUpdated: "2026-10-25",
+    lastUpdated: "2026-11-02",
     fileSize: "1.2 MB (PDF)",
-    notes: "Official signed grade sheet from Gujarat Technological University."
+    notes: "GTU official semester grade sheet."
   },
   {
     id: "doc-2",
-    name: "Valid Family Income Certificate (FY 2026-27)",
+    name: "Family Income Certificate (FY 2026-27)",
     type: "Financial",
     status: "Ready",
-    lastUpdated: "2026-10-20",
+    lastUpdated: "2026-10-25",
     fileSize: "850 KB (PDF)",
-    notes: "Issued by Mamlatdar Office, Dwarka, valid through March 2027."
+    notes: "Issued by Mamlatdar Office, Dwarka; valid through March 2027."
   },
   {
     id: "doc-3",
     name: "College Bonafide & Student ID Proof",
     type: "Institutional",
-    status: "Ready",
-    lastUpdated: "2026-10-22",
-    fileSize: "620 KB (PDF)",
-    notes: "Current semester bonafide stating roll number and enrollment."
+    status: "Pending",
+    lastUpdated: "2026-11-04",
+    fileSize: null,
+    notes: "Requested from college administrative office."
   },
   {
     id: "doc-4",
@@ -170,16 +141,16 @@ export const INITIAL_DOCUMENTS = [
     status: "Ready",
     lastUpdated: "2026-09-15",
     fileSize: "1.4 MB (PDF)",
-    notes: "Permanent Gujarat domicile verification."
+    notes: "Permanent Gujarat domicile proof."
   },
   {
     id: "doc-5",
     name: "Faculty Letter of Recommendation",
     type: "Recommendation",
     status: "Pending",
-    lastUpdated: "2026-11-04",
+    lastUpdated: "2026-11-05",
     fileSize: null,
-    notes: "Draft shared with department HOD; awaiting final letterhead copy."
+    notes: "Draft shared with professor; awaiting final signature."
   },
   {
     id: "doc-6",
@@ -195,100 +166,62 @@ export const INITIAL_DOCUMENTS = [
     name: "Statement of Purpose (SOP) & Project Portfolio",
     type: "Personal Statement",
     status: "Pending",
-    lastUpdated: "2026-11-05",
+    lastUpdated: "2026-11-06",
     fileSize: null,
-    notes: "Drafting 500-word essay highlighting cloud and AI contributions."
+    notes: "Drafting 500-word statement highlighting cloud and software projects."
   }
 ];
 
 export const INITIAL_PLANNER_TASKS = [
   {
     id: "task-1",
-    title: "Obtain signed Letter of Recommendation from Department HOD",
+    title: "Obtain signed Bonafide Certificate from College Office",
     category: "Documents",
-    relatedScholarshipId: "sch-001",
-    relatedScholarshipTitle: "Apex STEM Fellowship",
-    dueDate: "2026-11-08",
+    relatedScholarshipId: "sch-004",
+    relatedScholarshipTitle: "MYSY Gujarat Scheme",
+    dueDate: "2026-11-10",
     completed: false,
     priority: "High"
   },
   {
     id: "task-2",
-    title: "Finalize Statement of Purpose (500 words) for Apex STEM",
+    title: "Draft Statement of Purpose for Reliance Foundation Scholarship",
     category: "Application",
     relatedScholarshipId: "sch-001",
-    relatedScholarshipTitle: "Apex STEM Fellowship",
-    dueDate: "2026-11-09",
+    relatedScholarshipTitle: "Reliance Foundation Scholarship",
+    dueDate: "2026-11-12",
     completed: false,
     priority: "High"
   },
   {
     id: "task-3",
-    title: "Complete Silicon Edge 45-minute coding screening challenge",
-    category: "Assessment",
-    relatedScholarshipId: "sch-007",
-    relatedScholarshipTitle: "NextGen Software Engineers",
-    dueDate: "2026-11-11",
-    completed: false,
-    priority: "Medium"
-  },
-  {
-    id: "task-4",
-    title: "Verify MYSY Gujarat scrutiny status with college nodal officer",
-    category: "Follow-up",
-    relatedScholarshipId: "sch-004",
-    relatedScholarshipTitle: "MYSY Gujarat Scheme",
-    dueDate: "2026-11-07",
-    completed: true,
-    priority: "Low"
-  },
-  {
-    id: "task-5",
-    title: "Review eligibility for Digital Gujarat textbook grant",
+    title: "Explore state government schemes for Gujarat domicile students",
     category: "Exploration",
     relatedScholarshipId: "sch-006",
-    relatedScholarshipTitle: "Digital Gujarat Higher Education Grant",
+    relatedScholarshipTitle: "Digital Gujarat Higher Education Assistance",
     dueDate: "2026-11-15",
     completed: false,
-    priority: "Low"
+    priority: "Medium"
   }
 ];
 
 export const INITIAL_NOTIFICATIONS = [
   {
     id: "notif-1",
-    type: "urgent",
-    title: "Apex STEM Fellowship Deadline in 3 Days!",
-    message: "Final date is November 10, 2026. You have 2 documents pending preparation.",
-    date: "2 hours ago",
+    type: "info",
+    title: "Welcome to GRANTLY",
+    message: "Discover scholarships matching your Gujarat domicile, 8.6 CGPA, and Engineering degree.",
+    date: "Just now",
     read: false,
-    link: "/scholarship/sch-001"
+    link: "/explore"
   },
   {
     id: "notif-2",
-    type: "info",
-    title: "High Match Opportunity Identified",
-    message: "MYSY Gujarat Scheme matches your Dwarka, Gujarat domicile and 8.6 CGPA.",
-    date: "1 day ago",
+    type: "urgent",
+    title: "MYSY Gujarat Deadline Approaching",
+    message: "Application window closes on November 15, 2026. Prepare your bonafide certificate.",
+    date: "1 hour ago",
     read: false,
     link: "/scholarship/sch-004"
-  },
-  {
-    id: "notif-3",
-    type: "success",
-    title: "MYSY Scrutiny Progressed",
-    message: "Your application for Gujarat Higher Education Assistance was verified by college desk.",
-    date: "2 days ago",
-    read: true,
-    link: "/applications"
-  },
-  {
-    id: "notif-4",
-    type: "warning",
-    title: "Document Readiness at 71%",
-    message: "Complete 2 remaining checklist documents (SOP & Letter of Recommendation) to reach 100%.",
-    date: "3 days ago",
-    read: true,
-    link: "/documents"
   }
 ];

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Award, Eye, EyeOff, ArrowRight, Lock, Mail } from 'lucide-react';
+import { Award, Eye, EyeOff, ArrowRight, Lock, Mail, ShieldCheck } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 export default function Login() {
@@ -31,7 +31,7 @@ export default function Login() {
           <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">GRANTLY</span>
         </Link>
         <h2 className="mt-4 text-2xl font-bold text-slate-900 dark:text-white">Welcome Back</h2>
-        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Sign in to your scholarship management platform</p>
+        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Sign in to your scholarship discovery & management workspace</p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4">
@@ -77,7 +77,7 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -97,7 +97,7 @@ export default function Login() {
             <div className="pt-2">
               <button
                 type="submit"
-                className="w-full py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2"
+                className="w-full py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>Sign In to Student Dashboard</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -105,8 +105,13 @@ export default function Login() {
             </div>
           </form>
 
-          <p className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
-            Don't have an account?{' '}
+          {/* Architectural Authenticity Notice */}
+          <div className="mt-5 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed text-center">
+            <span className="font-semibold text-slate-700 dark:text-slate-300">Client-Side Architecture:</span> This hackathon deployment persists sessions and student profiles via client LocalStorage. No external backend authentication server is claimed or required.
+          </div>
+
+          <p className="mt-5 text-center text-xs text-slate-500 dark:text-slate-400">
+            Don&apos;t have an account?{' '}
             <Link to="/signup" className="font-semibold text-brand-600 dark:text-brand-400 hover:underline">
               Create student account
             </Link>

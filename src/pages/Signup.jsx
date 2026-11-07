@@ -156,13 +156,18 @@ export default function Signup() {
             <div className="pt-2">
               <button
                 type="submit"
-                className="w-full py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2"
+                className="w-full py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>Continue to Onboarding</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </form>
+
+          {/* Architectural Authenticity Notice */}
+          <div className="mt-5 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed text-center">
+            <span className="font-semibold text-slate-700 dark:text-slate-300">Client-Side Architecture:</span> Account profiles and session states are maintained in client LocalStorage for this hackathon platform demonstration.
+          </div>
 
           <p className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
             Already have an account?{' '}

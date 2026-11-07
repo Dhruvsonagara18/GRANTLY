@@ -9,7 +9,10 @@ import {
   ArrowRight,
   Target,
   ChevronRight,
-  MapPin
+  MapPin,
+  CheckCircle2,
+  Compass,
+  FileText
 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import DashboardLayout from '../components/layout/DashboardLayout';
@@ -28,7 +31,7 @@ export default function Dashboard() {
     theme
   } = useApp();
 
-  // 1. High Matching Recommendations (>= 70% score)
+  // 1. High Matching Recommendations (Eligible or Potentially Eligible >= 70% score)
   const recommendations = allScholarships
     .filter(s => s.eligibility?.score >= 70 && !s.deadlineInfo?.isClosed)
     .sort((a, b) => b.eligibility.score - a.eligibility.score)
@@ -62,7 +65,7 @@ export default function Dashboard() {
     { name: 'Rejected', value: statusCounts.Rejected, color: '#EF4444' }
   ].filter(d => d.value > 0);
 
-  const displayChartData = chartData.length > 0 ? chartData : [{ name: 'No Applications', value: 1, color: theme === 'dark' ? '#334155' : '#E2E8F0' }];
+  const displayChartData = chartData.length > 0 ? chartData : [{ name: 'Empty Pipeline', value: 1, color: theme === 'dark' ? '#334155' : '#E2E8F0' }];
 
   // 4. Pending Tasks / Next Steps
   const pendingTasks = tasks.filter(t => !t.completed).slice(0, 4);
@@ -148,89 +151,85 @@ export default function Dashboard() {
               <span className="text-[11px] font-bold uppercase tracking-wider">Potential Funding</span>
               <TrendingUp className="w-4 h-4" />
             </div>
-            <p className="text-xl sm:text-2xl font-black text-brand-900 dark:text-brand-200">
-              ₹{(totalPotentialFunding / 100000).toFixed(1)} Lakhs
+            <p className="text-2xl sm:text-3xl font-black text-brand-700 dark:text-brand-400">
+              ₹{(totalPotentialFunding / 100000).toFixed(1)}L
             </p>
-            <p className="text-[10px] text-brand-600 dark:text-brand-400 mt-1">Total matched value</p>
+            <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1">Verified eligible pool</p>
           </div>
         </div>
 
-        {/* MAIN DASHBOARD GRID */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Left Column: Recommended for You (8 cols) */}
-          <div className="lg:col-span-8 space-y-8">
-            {/* Widget A: Recommended For You */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-brand-600 dark:text-brand-400" />
-                    <span>Recommended For You</span>
-                  </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Highest compatibility opportunities based on your {user?.education?.degree} & {user?.state} domicile.
-                  </p>
-                </div>
-                <Link
-                  to="/explore"
-                  className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 flex items-center gap-1"
-                >
-                  <span>View All</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {recommendations.map((scholarship) => (
-                  <ScholarshipCard key={scholarship.id} scholarship={scholarship} viewMode="grid" />
-                ))}
-              </div>
+        {/* WIDGET A: TOP RECOMMENDED SCHOLARSHIPS */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-brand-600 dark:text-brand-400" />
+                <span>Top Matched Opportunities</span>
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Calibrated against your B.Tech engineering stream, 8.6 CGPA, and Dwarka, Gujarat domicile
+              </p>
             </div>
+            <Link
+              to="/explore"
+              className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 flex items-center gap-1"
+            >
+              <span>Explore All ({allScholarships.length})</span>
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
 
-            {/* Widget B: Upcoming Deadlines Radar */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {recommendations.map((sch) => (
+              <ScholarshipCard key={sch.id} scholarship={sch} viewMode="grid" />
+            ))}
+          </div>
+        </div>
+
+        {/* TWO-COLUMN LOWER SECTION: PIPELINES, TASKS & READINESS */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Left Column: Widgets B & G (8 cols) */}
+          <div className="lg:col-span-8 space-y-8">
+            {/* Widget B: Urgent Upcoming Deadlines Countdown */}
             <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center">
-                    <Clock className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-slate-900 dark:text-white text-sm">Critical Deadlines Radar</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Prioritize submissions closing within this week</p>
-                  </div>
+                <div>
+                  <h3 className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+                    <span>Deadlines Closing Within 7 Days</span>
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Prioritize preparation for approaching submission windows</p>
                 </div>
-                <Link
-                  to="/deadlines"
-                  className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300"
-                >
-                  View Deadline Calendar
+                <Link to="/deadlines" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                  Full Radar
                 </Link>
               </div>
 
               <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {urgentDeadlines.map((sch) => (
-                  <div key={sch.id} className="py-3 flex items-center justify-between gap-4">
+                  <div key={sch.id} className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 p-2 rounded-xl transition-colors">
                     <div className="min-w-0">
-                      <Link
-                        to={`/scholarship/${sch.id}`}
-                        className="text-xs font-bold text-slate-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors truncate block"
-                      >
+                      <Link to={`/scholarship/${sch.id}`} className="font-bold text-xs text-slate-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-400 truncate block">
                         {sch.title}
                       </Link>
-                      <p className="text-[11px] text-slate-400 dark:text-slate-500">{sch.organization} • {sch.amount}</p>
+                      <div className="flex items-center gap-2 text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
+                        <span>{sch.organization}</span>
+                        <span>•</span>
+                        <span className="font-semibold text-brand-700 dark:text-brand-400">{sch.amount}</span>
+                      </div>
                     </div>
 
                     <div className="flex items-center gap-3 shrink-0">
-                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
                         sch.deadlineInfo?.isUrgent
-                          ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
-                          : 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
+                          ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
+                          : 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
                       }`}>
                         {sch.deadlineInfo?.label}
                       </span>
                       <Link
                         to={`/scholarship/${sch.id}`}
-                        className="px-3 py-1 rounded-lg bg-slate-900 hover:bg-brand-600 dark:bg-slate-800 dark:hover:bg-brand-600 text-white text-xs font-medium transition-colors"
+                        className="px-3 py-1 rounded-lg bg-slate-900 hover:bg-brand-600 dark:bg-slate-800 dark:hover:bg-brand-600 text-white text-xs font-medium transition-colors cursor-pointer"
                       >
                         Review
                       </Link>
@@ -240,8 +239,8 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Widget G: Application Pipeline History */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
+            {/* Widget G: Application Pipeline */}
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4 transition-colors">
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
                   <Briefcase className="w-4 h-4 text-brand-600 dark:text-brand-400" />
@@ -252,25 +251,46 @@ export default function Dashboard() {
                 </Link>
               </div>
 
-              <div className="space-y-3">
-                {applications.slice(0, 3).map((app) => (
-                  <div key={app.id} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-xs text-slate-900 dark:text-white">{app.scholarshipTitle}</span>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-brand-100 dark:bg-brand-900/60 text-brand-800 dark:text-brand-200">
-                          {app.status}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{app.notes}</p>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <p className="text-xs font-bold text-brand-700 dark:text-brand-400">{app.awardAmount}</p>
-                      <p className="text-[10px] text-slate-400 dark:text-slate-500">Target: {app.targetSubmitDate}</p>
-                    </div>
+              {applications.length === 0 ? (
+                <div className="py-8 text-center space-y-3">
+                  <div className="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-950/80 text-brand-600 dark:text-brand-400 flex items-center justify-center mx-auto">
+                    <Briefcase className="w-5 h-5" />
                   </div>
-                ))}
-              </div>
+                  <div className="space-y-1">
+                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200">No Applications Currently Tracked</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+                      Discover verified scholarships matching your credentials and start tracking your preparation journey.
+                    </p>
+                  </div>
+                  <Link
+                    to="/explore"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-2xs transition-colors"
+                  >
+                    <span>Browse Scholarships</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {applications.slice(0, 3).map((app) => (
+                    <div key={app.id} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-xs text-slate-900 dark:text-white">{app.scholarshipTitle}</span>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-brand-100 dark:bg-brand-900/60 text-brand-800 dark:text-brand-200">
+                            {app.status}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{app.notes}</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-xs font-bold text-brand-700 dark:text-brand-400">{app.awardAmount}</p>
+                        <p className="text-[10px] text-slate-400 dark:text-slate-500">Target: {app.targetSubmitDate}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -299,7 +319,7 @@ export default function Dashboard() {
               <div className="pt-2">
                 <Link
                   to="/documents"
-                  className="w-full py-2.5 px-4 rounded-xl bg-white text-brand-900 font-bold text-xs text-center block hover:bg-brand-50 transition-colors"
+                  className="w-full py-2.5 px-4 rounded-xl bg-white text-brand-900 font-bold text-xs text-center block hover:bg-brand-50 transition-colors cursor-pointer"
                 >
                   Boost Readiness Score
                 </Link>
@@ -307,19 +327,21 @@ export default function Dashboard() {
             </div>
 
             {/* Widget C: Application Status Donut Chart */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
-              <h3 className="font-bold text-slate-900 dark:text-white text-sm">Application Breakdown</h3>
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4 transition-colors">
+              <h3 className="font-bold text-slate-900 dark:text-white text-sm">
+                Application Pipeline Distribution
+              </h3>
 
-              <div className="h-48 w-full flex items-center justify-center">
+              <div className="h-44 w-full flex items-center justify-center">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={displayChartData}
                       cx="50%"
                       cy="50%"
-                      innerRadius={50}
-                      outerRadius={75}
-                      paddingAngle={4}
+                      innerRadius={45}
+                      outerRadius={70}
+                      paddingAngle={displayChartData.length > 1 ? 4 : 0}
                       dataKey="value"
                     >
                       {displayChartData.map((entry, index) => (
@@ -328,49 +350,53 @@ export default function Dashboard() {
                     </Pie>
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: theme === 'dark' ? '#1E293B' : '#FFFFFF',
+                        backgroundColor: theme === 'dark' ? '#0F172A' : '#FFFFFF',
                         borderColor: theme === 'dark' ? '#334155' : '#E2E8F0',
-                        color: theme === 'dark' ? '#FFFFFF' : '#000000',
-                        borderRadius: '0.75rem'
+                        color: theme === 'dark' ? '#F8FAFC' : '#0F172A',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                        fontSize: '12px'
                       }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                {chartData.map((d, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: d.color }} />
-                    <span className="text-slate-600 dark:text-slate-400 truncate">{d.name} ({d.value})</span>
-                  </div>
-                ))}
-              </div>
+              {chartData.length > 0 ? (
+                <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-600 dark:text-slate-400">
+                  {chartData.map((d, i) => (
+                    <div key={i} className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: d.color }} />
+                      <span className="truncate">{d.name} ({d.value})</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[11px] text-center text-slate-400 dark:text-slate-500">
+                  No active applications. Track an opportunity to see pipeline metrics.
+                </p>
+              )}
             </div>
 
-            {/* Widget E: Actionable Next Steps (Planner Tasks) */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
+            {/* Widget E: Action Items & Planner */}
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3 transition-colors">
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-slate-900 dark:text-white text-sm">
-                  Actionable Next Steps
+                  Priority Action Checklist
                 </h3>
-                <Link to="/planner" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
-                  Open Planner
+                <Link to="/planner" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline">
+                  Planner
                 </Link>
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 {pendingTasks.map((t) => (
-                  <div key={t.id} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 text-xs">
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="font-semibold text-slate-900 dark:text-white leading-snug">{t.title}</p>
-                      <span className={`px-1.5 py-0.5 text-[9px] font-bold rounded ${
-                        t.priority === 'High' ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
-                      }`}>
-                        {t.priority}
-                      </span>
+                  <div key={t.id} className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60 text-xs flex items-start gap-2.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-600 dark:bg-brand-400 shrink-0 mt-1.5" />
+                    <div className="min-w-0">
+                      <p className="font-bold text-slate-900 dark:text-white leading-snug">{t.title}</p>
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">Due {t.dueDate} • {t.category}</p>
                     </div>
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Due {t.dueDate} • {t.relatedScholarshipTitle || t.category}</p>
                   </div>
                 ))}
               </div>

@@ -6,12 +6,17 @@ import {
   ArrowLeftRight,
   Building,
   CheckCircle2,
+  AlertTriangle,
   XCircle,
   FileText,
   ShieldCheck,
   Sparkles,
   ArrowRight,
-  Share2
+  Share2,
+  ExternalLink,
+  HelpCircle,
+  Calendar,
+  AlertCircle
 } from 'lucide-react';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import EligibilityBreakdownModal from '../components/scholarship/EligibilityBreakdownModal';
@@ -62,6 +67,10 @@ export default function ScholarshipDetails() {
   const existingApp = applications.find((a) => a.scholarshipId === scholarship.id);
 
   const { eligibility, deadlineInfo } = scholarship;
+  const verdict = eligibility?.verdict || "Potentially Eligible";
+  const isEligible = verdict === "Eligible";
+  const isPotentially = verdict === "Potentially Eligible";
+  const isNotEligible = verdict === "Not Eligible";
 
   const handleCopyLink = () => {
     navigator.clipboard?.writeText(window.location.href);
@@ -90,7 +99,7 @@ export default function ScholarshipDetails() {
           <div className="flex items-center gap-2">
             <button
               onClick={handleCopyLink}
-              className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-medium flex items-center gap-1.5 shadow-xs"
+              className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-medium flex items-center gap-1.5 shadow-xs cursor-pointer"
               title="Copy link"
             >
               <Share2 className="w-4 h-4" />
@@ -99,7 +108,7 @@ export default function ScholarshipDetails() {
 
             <button
               onClick={() => compared ? removeFromCompare(scholarship.id) : addToCompare(scholarship.id)}
-              className={`p-2 rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-colors shadow-xs ${
+              className={`p-2 rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer ${
                 compared
                   ? 'bg-indigo-50 dark:bg-indigo-950/80 border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300'
                   : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
@@ -111,7 +120,7 @@ export default function ScholarshipDetails() {
 
             <button
               onClick={() => toggleSaveScholarship(scholarship.id)}
-              className={`p-2 rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-colors shadow-xs ${
+              className={`p-2 rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer ${
                 saved
                   ? 'bg-brand-50 dark:bg-brand-950/80 border-brand-300 dark:border-brand-700 text-brand-700 dark:text-brand-300'
                   : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
@@ -124,13 +133,38 @@ export default function ScholarshipDetails() {
         </div>
 
         {/* TOP HERO OVERVIEW CARD */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-card space-y-6">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-card space-y-6 transition-colors">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
             <div className="space-y-3 flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <span className={`px-3 py-1 rounded-full text-xs font-bold border ${eligibility.statusClass}`}>
-                  {eligibility.score}% — {eligibility.status}
-                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowEligibilityModal(true)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border transition-transform hover:scale-105 cursor-pointer ${
+                    isEligible
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800'
+                      : isPotentially
+                      ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800'
+                      : 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800'
+                  }`}
+                >
+                  {isEligible && <CheckCircle2 className="w-3.5 h-3.5" />}
+                  {isPotentially && <AlertTriangle className="w-3.5 h-3.5" />}
+                  {isNotEligible && <XCircle className="w-3.5 h-3.5" />}
+                  <span>{verdict} — {eligibility.score}% Compat</span>
+                </button>
+
+                {scholarship.isVerified ? (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>{scholarship.verificationStatus || 'Verified Scheme'}</span>
+                  </span>
+                ) : (
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                    Illustrative Sample Record
+                  </span>
+                )}
+
                 <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
                   {scholarship.category}
                 </span>
@@ -146,18 +180,24 @@ export default function ScholarshipDetails() {
                 {scholarship.title}
               </h1>
 
-              <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+              <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
                 <Building className="w-4 h-4 text-slate-400" />
                 <span className="font-semibold text-slate-800 dark:text-slate-200">{scholarship.organization}</span>
                 <span className="text-slate-300 dark:text-slate-600">•</span>
                 <span>{scholarship.fundingType} Scheme</span>
+                {scholarship.lastVerified && (
+                  <>
+                    <span className="text-slate-300 dark:text-slate-600">•</span>
+                    <span className="text-[11px] text-slate-400 dark:text-slate-500">Verified: {scholarship.lastVerified}</span>
+                  </>
+                )}
               </div>
             </div>
 
             {/* Right Meta Column: Award & Deadline */}
             <div className="p-5 rounded-2xl bg-gradient-to-br from-brand-50 to-indigo-50/50 dark:from-slate-800 dark:to-brand-950/40 border border-brand-200/80 dark:border-slate-700 shrink-0 w-full md:w-72 space-y-3 text-center sm:text-left">
               <div>
-                <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500">Total Award Value</p>
+                <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500">Award Amount</p>
                 <p className="text-2xl font-black text-brand-700 dark:text-brand-400">{scholarship.amount}</p>
               </div>
 
@@ -175,6 +215,18 @@ export default function ScholarshipDetails() {
                 </span>
               </div>
 
+              {scholarship.officialUrl && (
+                <a
+                  href={scholarship.officialUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2 px-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-brand-400 text-slate-700 dark:text-slate-200 hover:text-brand-600 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
+                >
+                  <span>Open Official Application Portal</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              )}
+
               {existingApp ? (
                 <Link
                   to="/applications"
@@ -185,7 +237,7 @@ export default function ScholarshipDetails() {
               ) : (
                 <button
                   onClick={() => handleTrackApplication('Preparing Documents')}
-                  className="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>Track in My Applications</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -204,38 +256,50 @@ export default function ScholarshipDetails() {
           {/* Left Main: Eligibility Details, Gaps, Required Docs */}
           <div className="lg:col-span-8 space-y-6">
             {/* Deterministic Match Breakdown */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4 transition-colors">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-brand-600 dark:text-brand-400" />
-                  <h3 className="font-bold text-slate-900 dark:text-white text-sm">Deterministic Eligibility Breakdown</h3>
+                  <h3 className="font-bold text-slate-900 dark:text-white text-sm">Eligibility Evaluation</h3>
                 </div>
                 <button
+                  type="button"
                   onClick={() => setShowEligibilityModal(true)}
-                  className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline"
+                  className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline cursor-pointer"
                 >
                   View Full Report
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold">Education Level</p>
-                  <p className="text-sm font-black text-slate-900 dark:text-white mt-0.5">{eligibility.breakdown.education}/25</p>
+              {/* Ineligibility Reasons (if any) */}
+              {eligibility.reasonsForIneligibility && eligibility.reasonsForIneligibility.length > 0 && (
+                <div className="p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-xs text-rose-800 dark:text-rose-300 space-y-1">
+                  <p className="font-bold text-rose-950 dark:text-rose-200 flex items-center gap-1.5">
+                    <XCircle className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+                    <span>Ineligibility Notice</span>
+                  </p>
+                  <ul className="list-disc list-inside space-y-0.5 text-[11px] pt-1">
+                    {eligibility.reasonsForIneligibility.map((r, i) => (
+                      <li key={i}>{r}</li>
+                    ))}
+                  </ul>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold">Academic Score</p>
-                  <p className="text-sm font-black text-slate-900 dark:text-white mt-0.5">{eligibility.breakdown.academic}/25</p>
+              )}
+
+              {/* Missing Information (if any) */}
+              {eligibility.missingInfo && eligibility.missingInfo.length > 0 && (
+                <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs text-amber-800 dark:text-amber-300 space-y-1">
+                  <p className="font-bold text-amber-950 dark:text-amber-200 flex items-center gap-1.5">
+                    <HelpCircle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                    <span>Missing Verification Information</span>
+                  </p>
+                  <ul className="list-disc list-inside space-y-0.5 text-[11px] pt-1">
+                    {eligibility.missingInfo.map((m, i) => (
+                      <li key={i}>{m}</li>
+                    ))}
+                  </ul>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold">Income Bracket</p>
-                  <p className="text-sm font-black text-slate-900 dark:text-white mt-0.5">{eligibility.breakdown.income}/25</p>
-                </div>
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold">Location / Domicile</p>
-                  <p className="text-sm font-black text-slate-900 dark:text-white mt-0.5">{eligibility.breakdown.location}/25</p>
-                </div>
-              </div>
+              )}
 
               {/* Matched & Unmatched List */}
               <div className="space-y-2 pt-2">
@@ -262,14 +326,14 @@ export default function ScholarshipDetails() {
             </div>
 
             {/* Document Checklist for this Scholarship */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4 transition-colors">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4 text-brand-600 dark:text-brand-400" />
                   <h3 className="font-bold text-slate-900 dark:text-white text-sm">Required Document Checklist</h3>
                 </div>
                 <Link to="/documents" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline">
-                  Document Readiness Center
+                  Document Locker
                 </Link>
               </div>
 
@@ -298,25 +362,32 @@ export default function ScholarshipDetails() {
             </div>
 
             {/* Application Instructions */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3 transition-colors">
               <h3 className="font-bold text-slate-900 dark:text-white text-sm">Application Instructions</h3>
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                 {scholarship.applicationInstructions}
               </p>
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-                <span className="text-slate-400 dark:text-slate-500">Source: {scholarship.officialSource}</span>
-                <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Scheme Verified</span>
-                </span>
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <span className="text-slate-500 dark:text-slate-400">Official Source: {scholarship.officialSource}</span>
+                {scholarship.officialUrl && (
+                  <a
+                    href={scholarship.officialUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 font-semibold text-brand-600 dark:text-brand-400 hover:underline"
+                  >
+                    <span>Visit Authority Portal</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
               </div>
             </div>
           </div>
 
           {/* Right Sidebar: Criteria Snapshot, Quick Actions */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
-              <h3 className="font-bold text-slate-900 dark:text-white text-sm">Eligibility Snapshot</h3>
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4 transition-colors">
+              <h3 className="font-bold text-slate-900 dark:text-white text-sm">Eligibility Criteria Snapshot</h3>
 
               <div className="space-y-3 text-xs">
                 <div>
@@ -360,7 +431,7 @@ export default function ScholarshipDetails() {
               </p>
               <Link
                 to="/assistant"
-                className="w-full py-2 px-3 rounded-xl bg-white text-brand-900 font-bold text-xs text-center block hover:bg-brand-50 transition-colors"
+                className="w-full py-2 px-3 rounded-xl bg-white text-brand-900 font-bold text-xs text-center block hover:bg-brand-50 transition-colors cursor-pointer"
               >
                 Ask Assistant About This Grant
               </Link>

@@ -36,6 +36,14 @@ export const Storage = {
         };
       }
 
+      // Purge any legacy fake submitted applications with fictional acknowledgement numbers
+      if (key === KEYS.APPLICATIONS && Array.isArray(parsed)) {
+        const hasLegacyFakeActivity = parsed.some(a => a.notes && (a.notes.includes("NSP-2026") || a.notes.includes("disbursement authorization")));
+        if (hasLegacyFakeActivity) {
+          return INITIAL_APPLICATIONS;
+        }
+      }
+
       return parsed;
     } catch (e) {
       console.warn(`Error reading key ${key} from localStorage:`, e);
