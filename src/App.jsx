@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 
 // Pages
@@ -24,11 +24,14 @@ import Notifications from './pages/Notifications';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 
-// Protected Route Component
+// Protected Route Component with Destination Return URL Guard
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useApp();
+  const location = useLocation();
+
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    // Preserve the requested destination route so user is smoothly returned after login/signup
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
   return children;
 }

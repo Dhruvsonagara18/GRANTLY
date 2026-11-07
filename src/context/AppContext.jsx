@@ -38,8 +38,9 @@ export function AppProvider({ children }) {
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    const auth = Storage.get(Storage.KEYS.AUTH, { isAuthenticated: true });
-    return auth?.isAuthenticated ?? true;
+    const auth = Storage.get(Storage.KEYS.AUTH, null);
+    // Unauthenticated visitors must log in or sign in when accessing protected links
+    return auth?.isAuthenticated ?? false;
   });
 
   // 2. Saved Scholarships (IDs)

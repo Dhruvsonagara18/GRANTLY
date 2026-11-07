@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Sparkles,
   ArrowRight,
@@ -15,6 +15,7 @@ import { useApp } from '../context/AppContext';
 export default function Onboarding() {
   const { user, updateUserProfile } = useApp();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [step, setStep] = useState(1);
 
@@ -84,7 +85,13 @@ export default function Onboarding() {
       onboardingCompleted: true
     });
 
-    navigate('/dashboard');
+    const from = location.state?.from
+      ? (typeof location.state.from === 'string'
+          ? location.state.from
+          : `${location.state.from.pathname || '/dashboard'}${location.state.from.search || ''}`)
+      : '/dashboard';
+
+    navigate(from, { replace: true });
   };
 
   return (

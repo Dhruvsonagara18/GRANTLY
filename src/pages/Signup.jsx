@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Award, Eye, EyeOff, ArrowRight, User, Mail, Lock, MapPin } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
@@ -16,6 +16,9 @@ export default function Signup() {
   const [error, setError] = useState('');
   const { updateUserProfile, login } = useApp();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const hasRedirectTarget = Boolean(location.state?.from);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -36,7 +39,7 @@ export default function Signup() {
     });
 
     login(formData.email, formData.password);
-    navigate('/onboarding');
+    navigate('/onboarding', { state: { from: location.state?.from } });
   };
 
   return (
@@ -48,12 +51,25 @@ export default function Signup() {
           </div>
           <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">GRANTLY</span>
         </Link>
-        <h2 className="mt-4 text-2xl font-bold text-slate-900 dark:text-white">Create Your Student Account</h2>
-        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Discover matching grants in under 3 minutes</p>
+        <h2 className="mt-4 text-2xl font-bold text-slate-900 dark:text-white">Create Student Account</h2>
+        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Unlock deterministic scholarship matching and unified application tracking</p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-white dark:bg-slate-900 py-8 px-6 shadow-xl shadow-brand-500/5 sm:rounded-3xl border border-slate-200 dark:border-slate-800">
+        <div className="bg-white dark:bg-slate-900 py-8 px-6 shadow-xl shadow-brand-500/5 sm:rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+          {/* Automatic Return URL Banner */}
+          {hasRedirectTarget && (
+            <div className="p-3.5 rounded-2xl bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-xs text-brand-800 dark:text-brand-300 flex items-start gap-2.5">
+              <Lock className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold">Sign-up Required</p>
+                <p className="text-[11px] text-brand-700 dark:text-brand-400 mt-0.5">
+                  Create your profile to access that opportunity. You will be redirected right to your destination.
+                </p>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-xs text-rose-700 dark:text-rose-300">
@@ -72,7 +88,7 @@ export default function Signup() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full pl-9 pr-3 py-2.5 text-xs text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-900 focus:border-brand-500 outline-none transition-all"
-                  placeholder="e.g. Dhruv Sonagara"
+                  placeholder="Dhruv Sonagara"
                   required
                 />
               </div>
@@ -89,7 +105,7 @@ export default function Signup() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full pl-9 pr-3 py-2.5 text-xs text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-900 focus:border-brand-500 outline-none transition-all"
-                  placeholder="student@university.edu"
+                  placeholder="student@example.edu"
                   required
                 />
               </div>
@@ -98,25 +114,12 @@ export default function Signup() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                  City
-                </label>
-                <input
-                  type="text"
-                  value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="w-full px-3 py-2.5 text-xs text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-900 focus:border-brand-500 outline-none transition-all"
-                  placeholder="e.g. Dwarka"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Domicile State
                 </label>
                 <select
                   value={formData.state}
                   onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                  className="w-full px-3 py-2.5 text-xs text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-900 focus:border-brand-500 outline-none transition-all"
+                  className="w-full px-2.5 py-2.5 text-xs text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-900 focus:border-brand-500 outline-none transition-all"
                 >
                   <option value="Gujarat">Gujarat</option>
                   <option value="Maharashtra">Maharashtra</option>
@@ -127,6 +130,36 @@ export default function Signup() {
                   <option value="Other">Other State</option>
                 </select>
               </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  City
+                </label>
+                <input
+                  type="text"
+                  value={formData.city}
+                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  className="w-full px-3 py-2.5 text-xs text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-900 focus:border-brand-500 outline-none transition-all"
+                  placeholder="Dwarka"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                Current Education Tier
+              </label>
+              <select
+                value={formData.educationLevel}
+                onChange={(e) => setFormData({ ...formData, educationLevel: e.target.value })}
+                className="w-full px-3 py-2.5 text-xs text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-900 focus:border-brand-500 outline-none transition-all"
+              >
+                <option value="Undergraduate">Undergraduate (B.Tech / B.E / B.Sc / B.Com)</option>
+                <option value="Postgraduate">Postgraduate (M.Tech / M.S / MBA / M.Sc)</option>
+                <option value="Doctoral">Doctoral (Ph.D.)</option>
+                <option value="Diploma">Diploma / Polytechnic</option>
+              </select>
             </div>
 
             <div>
@@ -146,7 +179,7 @@ export default function Signup() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -169,9 +202,13 @@ export default function Signup() {
             <span className="font-semibold text-slate-700 dark:text-slate-300">Client-Side Architecture:</span> Account profiles and session states are maintained in client LocalStorage for this hackathon platform demonstration.
           </div>
 
-          <p className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
+          <p className="mt-5 text-center text-xs text-slate-500 dark:text-slate-400">
             Already have an account?{' '}
-            <Link to="/login" className="font-semibold text-brand-600 dark:text-brand-400 hover:underline">
+            <Link
+              to="/login"
+              state={{ from: location.state?.from }}
+              className="font-semibold text-brand-600 dark:text-brand-400 hover:underline"
+            >
               Log in
             </Link>
           </p>

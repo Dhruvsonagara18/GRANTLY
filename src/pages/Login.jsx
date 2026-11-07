@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Award, Eye, EyeOff, ArrowRight, Lock, Mail, ShieldCheck } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Award, Eye, EyeOff, ArrowRight, Lock, Mail, ShieldCheck, AlertCircle } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 export default function Login() {
@@ -8,8 +8,18 @@ export default function Login() {
   const [password, setPassword] = useState('student2026');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const { login } = useApp();
+  const { login, loginDemo } = useApp();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Retrieve destination from router state or default to /dashboard
+  const from = location.state?.from
+    ? (typeof location.state.from === 'string'
+        ? location.state.from
+        : `${location.state.from.pathname || '/dashboard'}${location.state.from.search || ''}`)
+    : '/dashboard';
+
+  const hasRedirectTarget = Boolean(location.state?.from);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,7 +28,7 @@ export default function Login() {
       return;
     }
     login(email, password);
-    navigate('/dashboard');
+    navigate(from, { replace: true });
   };
 
   return (
@@ -35,7 +45,20 @@ export default function Login() {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-white dark:bg-slate-900 py-8 px-6 shadow-xl shadow-brand-500/5 sm:rounded-3xl border border-slate-200 dark:border-slate-800">
+        <div className="bg-white dark:bg-slate-900 py-8 px-6 shadow-xl shadow-brand-500/5 sm:rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+          {/* Automatic Return URL Banner */}
+          {hasRedirectTarget && (
+            <div className="p-3.5 rounded-2xl bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-xs text-brand-800 dark:text-brand-300 flex items-start gap-2.5">
+              <Lock className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold">Sign-in Required</p>
+                <p className="text-[11px] text-brand-700 dark:text-brand-400 mt-0.5">
+                  Please log in to continue. You will be automatically redirected right back to your requested page.
+                </p>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-xs text-rose-700 dark:text-rose-300">
@@ -94,13 +117,24 @@ export default function Login() {
               </a>
             </div>
 
-            <div className="pt-2">
+            <div className="pt-2 space-y-2">
               <button
                 type="submit"
                 className="w-full py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>Sign In to Student Dashboard</span>
                 <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  loginDemo();
+                  navigate(from, { replace: true });
+                }}
+                className="w-full py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 font-semibold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>Quick Sign-In as Dhruv Sonagara</span>
               </button>
             </div>
           </form>
@@ -112,7 +146,11 @@ export default function Login() {
 
           <p className="mt-5 text-center text-xs text-slate-500 dark:text-slate-400">
             Don&apos;t have an account?{' '}
-            <Link to="/signup" className="font-semibold text-brand-600 dark:text-brand-400 hover:underline">
+            <Link
+              to="/signup"
+              state={{ from: location.state?.from }}
+              className="font-semibold text-brand-600 dark:text-brand-400 hover:underline"
+            >
               Create student account
             </Link>
           </p>
