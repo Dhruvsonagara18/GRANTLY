@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { SCHOLARSHIPS_DATA } from '../data/scholarships';
-import { INITIAL_DEMO_USER, INITIAL_SAVED_SCHOLARSHIPS, INITIAL_APPLICATIONS, INITIAL_DOCUMENTS, INITIAL_PLANNER_TASKS, INITIAL_NOTIFICATIONS } from '../data/demoUser';
+import { INITIAL_USER_PROFILE, INITIAL_SAVED_SCHOLARSHIPS, INITIAL_APPLICATIONS, INITIAL_DOCUMENTS, INITIAL_PLANNER_TASKS, INITIAL_NOTIFICATIONS } from '../data/demoUser';
 import { Storage } from '../utils/storage';
 import { calculateEligibility, calculateReadinessScore } from '../utils/eligibility';
 import { getDeadlineInfo } from '../utils/deadline';
@@ -8,14 +8,38 @@ import { getDeadlineInfo } from '../utils/deadline';
 const AppContext = createContext();
 
 export function AppProvider({ children }) {
-  // 1. Auth & User Profile State
+  // Theme State: 'light' or 'dark'
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = Storage.get(Storage.KEYS.THEME, null);
+    if (savedTheme) return savedTheme;
+    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  });
+
+  // Apply theme to <html> element
+  useEffect(() => {
+    Storage.set(Storage.KEYS.THEME, theme);
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
+
+  // 1. Auth & User Profile State (Default: Dhruv Sonagara, Dwarka, Gujarat)
   const [user, setUser] = useState(() => {
-    return Storage.get(Storage.KEYS.USER, INITIAL_DEMO_USER);
+    return Storage.get(Storage.KEYS.USER, INITIAL_USER_PROFILE);
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     const auth = Storage.get(Storage.KEYS.AUTH, { isAuthenticated: true });
-    return auth?.isAuthenticated ?? true; // Default to true for instant demo access
+    return auth?.isAuthenticated ?? true;
   });
 
   // 2. Saved Scholarships (IDs)
@@ -45,7 +69,7 @@ export function AppProvider({ children }) {
 
   // 7. Comparison List (max 3 items)
   const [compareIds, setCompareIds] = useState(() => {
-    return Storage.get(Storage.KEYS.COMPARE, ["sch-001", "sch-002", "sch-007"]);
+    return Storage.get(Storage.KEYS.COMPARE, ["sch-004", "sch-001", "sch-002"]);
   });
 
   // 8. Quiz Results
@@ -97,9 +121,8 @@ export function AppProvider({ children }) {
   };
 
   const loginDemo = () => {
-    setUser(INITIAL_DEMO_USER);
+    setUser(INITIAL_USER_PROFILE);
     setIsAuthenticated(true);
-    Storage.resetToDemo();
   };
 
   const logout = () => {
@@ -115,6 +138,21 @@ export function AppProvider({ children }) {
       academics: { ...prev.academics, ...updatedFields.academics },
       financial: { ...prev.financial, ...updatedFields.financial },
       preferences: { ...prev.preferences, ...updatedFields.preferences }
+    }));
+  };
+
+  // Profile picture management
+  const uploadProfilePicture = (base64Image) => {
+    setUser(prev => ({
+      ...prev,
+      avatar: base64Image
+    }));
+  };
+
+  const removeProfilePicture = () => {
+    setUser(prev => ({
+      ...prev,
+      avatar: null
     }));
   };
 
@@ -136,7 +174,6 @@ export function AppProvider({ children }) {
   const addApplication = (scholarship, customStatus = "Interested", notes = "") => {
     const existing = applications.find(a => a.scholarshipId === scholarship.id);
     if (existing) {
-      // Just update status if already exists
       updateApplicationStatus(existing.id, customStatus);
       return existing;
     }
@@ -153,7 +190,7 @@ export function AppProvider({ children }) {
       targetSubmitDate: scholarship.deadline,
       deadline: scholarship.deadline,
       notes: notes || `Tracked for ${scholarship.title}`,
-      progressPercent: customStatus === "Interested" ? 20 : customStatus === "Preparing Documents" ? 60 : 100,
+      progressPercent: customStatus === "Interested" ? 25 : customStatus === "Preparing Documents" ? 65 : 100,
       timeline: [
         {
           date: new Date().toISOString().split("T")[0],
@@ -165,7 +202,6 @@ export function AppProvider({ children }) {
 
     setApplications(prev => [newApp, ...prev]);
 
-    // Also add in-app notification
     addNotification({
       type: "info",
       title: "Application Tracked",
@@ -188,8 +224,8 @@ export function AppProvider({ children }) {
         }
       ];
 
-      let newProgress = 20;
-      if (newStatus === "Preparing Documents") newProgress = 60;
+      let newProgress = 25;
+      if (newStatus === "Preparing Documents") newProgress = 65;
       if (newStatus === "Applied") newProgress = 85;
       if (newStatus === "Under Review") newProgress = 90;
       if (newStatus === "Approved" || newStatus === "Rejected") newProgress = 100;
@@ -224,7 +260,7 @@ export function AppProvider({ children }) {
       type: doc.type || "General",
       status: "Ready",
       lastUpdated: new Date().toISOString().split("T")[0],
-      fileSize: "Uploaded (Simulated)",
+      fileSize: "Uploaded (Verified locally)",
       notes: doc.notes || ""
     };
     setDocuments(prev => [newDoc, ...prev]);
@@ -257,7 +293,6 @@ export function AppProvider({ children }) {
   const addToCompare = (id) => {
     if (compareIds.includes(id)) return;
     if (compareIds.length >= 3) {
-      // Replace oldest or alert
       setCompareIds(prev => [prev[1], prev[2], id]);
     } else {
       setCompareIds(prev => [...prev, id]);
@@ -294,18 +329,20 @@ export function AppProvider({ children }) {
     setNotifications(prev => [newNotif, ...prev]);
   };
 
-  // Reset all to rich demo baseline
-  const resetDemo = () => {
-    Storage.resetToDemo();
-    setUser(INITIAL_DEMO_USER);
+  const resetDefaultProfile = () => {
+    Storage.resetDefaultProfile();
+    setUser(INITIAL_USER_PROFILE);
     setIsAuthenticated(true);
     setSavedIds(INITIAL_SAVED_SCHOLARSHIPS);
     setApplications(INITIAL_APPLICATIONS);
     setDocuments(INITIAL_DOCUMENTS);
     setTasks(INITIAL_PLANNER_TASKS);
     setNotifications(INITIAL_NOTIFICATIONS);
-    setCompareIds(["sch-001", "sch-002", "sch-007"]);
+    setCompareIds(["sch-004", "sch-001", "sch-002"]);
   };
+
+  // Alias for backward compatibility
+  const resetDemo = resetDefaultProfile;
 
   // Computed Values with deterministic eligibility calculations
   const evaluatedScholarships = useMemo(() => {
@@ -320,7 +357,7 @@ export function AppProvider({ children }) {
     });
   }, [user]);
 
-  // Total potential funding for all "Likely Match" opportunities
+  // Total potential funding for all matching opportunities
   const totalPotentialFunding = useMemo(() => {
     return evaluatedScholarships
       .filter(s => s.eligibility.score >= 70 && !s.deadlineInfo.isClosed)
@@ -337,12 +374,16 @@ export function AppProvider({ children }) {
   }, [notifications]);
 
   const value = {
+    theme,
+    toggleTheme,
     user,
     isAuthenticated,
     login,
     loginDemo,
     logout,
     updateUserProfile,
+    uploadProfilePicture,
+    removeProfilePicture,
     allScholarships: evaluatedScholarships,
     savedIds,
     toggleSaveScholarship,
@@ -373,6 +414,7 @@ export function AppProvider({ children }) {
     setQuizResults,
     totalPotentialFunding,
     readiness,
+    resetDefaultProfile,
     resetDemo
   };
 

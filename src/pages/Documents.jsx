@@ -3,20 +3,14 @@ import {
   FileCheck2,
   Plus,
   CheckCircle2,
-  Clock,
-  AlertTriangle,
-  FileText,
-  Upload,
   Info,
-  ShieldCheck,
-  ChevronRight,
-  Sparkles
+  ShieldCheck
 } from 'lucide-react';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import { useApp } from '../context/AppContext';
 
 export default function Documents() {
-  const { documents, updateDocumentStatus, addDocument, readiness } = useApp();
+  const { documents, updateDocumentStatus, addDocument } = useApp();
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [newDocName, setNewDocName] = useState('');
@@ -47,12 +41,12 @@ export default function Documents() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <FileCheck2 className="w-5 h-5 text-brand-600" />
-              <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+              <FileCheck2 className="w-5 h-5 text-brand-600 dark:text-brand-400" />
+              <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                 Document Readiness Center
               </h1>
             </div>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Verify prerequisite academic, financial, and domicile certificates before deadlines
             </p>
           </div>
@@ -62,7 +56,7 @@ export default function Documents() {
             className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md shadow-brand-500/20 transition-all"
           >
             <Plus className="w-4 h-4" />
-            <span>Add Custom Document</span>
+            <span>Add Prerequisite Document</span>
           </button>
         </div>
 
@@ -99,16 +93,16 @@ export default function Documents() {
           <div className="flex items-center gap-2 text-[11px] text-slate-300">
             <Info className="w-4 h-4 text-brand-300 shrink-0" />
             <span>
-              Disclaimer: Checking a document indicates personal preparation readiness in your local locker; it does not claim external official stamp verification.
+              Tracking indicates preparation in your local locker; submit official documents directly through sponsor portals when applying.
             </span>
           </div>
         </div>
 
         {/* DOCUMENTS CHECKLIST */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
-          <h2 className="text-base font-bold text-slate-900">Document Locker & Checklist</h2>
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
+          <h2 className="text-base font-bold text-slate-900 dark:text-white">Document Locker & Checklist</h2>
 
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {documents.map((doc) => {
               const isReady = doc.status === 'Ready';
               return (
@@ -123,22 +117,22 @@ export default function Documents() {
                         className={`w-5 h-5 rounded-md flex items-center justify-center border transition-all ${
                           isReady
                             ? 'bg-emerald-600 border-emerald-600 text-white'
-                            : 'border-slate-300 hover:border-brand-500'
+                            : 'border-slate-300 dark:border-slate-600 hover:border-brand-500'
                         }`}
                         title="Click to toggle status"
                       >
                         {isReady && <CheckCircle2 className="w-4 h-4" />}
                       </button>
-                      <h4 className={`text-sm font-bold ${isReady ? 'text-slate-900' : 'text-slate-700'}`}>
+                      <h4 className={`text-sm font-bold ${isReady ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
                         {doc.name}
                       </h4>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                         {doc.type}
                       </span>
                     </div>
 
-                    <p className="text-xs text-slate-500 pl-7">{doc.notes}</p>
-                    <p className="text-[10px] text-slate-400 pl-7">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 pl-7">{doc.notes}</p>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500 pl-7">
                       Last logged: {doc.lastUpdated} {doc.fileSize && `• ${doc.fileSize}`}
                     </p>
                   </div>
@@ -149,8 +143,8 @@ export default function Documents() {
                       onClick={() => updateDocumentStatus(doc.id, isReady ? 'Pending' : 'Ready')}
                       className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
                         isReady
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
+                          ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+                          : 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800 hover:bg-amber-100'
                       }`}
                     >
                       {isReady ? 'Marked Ready' : 'Mark as Ready'}
@@ -163,44 +157,44 @@ export default function Documents() {
         </div>
 
         {/* GUIDANCE & BEST PRACTICES */}
-        <div className="bg-slate-50 rounded-3xl p-6 border border-slate-200 space-y-3">
-          <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-brand-600" />
+        <div className="bg-slate-50 dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 space-y-3">
+          <h3 className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-brand-600 dark:text-brand-400" />
             <span>Document Preparation Guidelines for Students</span>
           </h3>
-          <ul className="text-xs text-slate-600 space-y-1.5 list-disc list-inside leading-relaxed">
-            <li><strong>Income Certificates:</strong> Must be issued by a competent revenue officer (e.g., Tehsildar or Sub-Divisional Magistrate) within the current fiscal year.</li>
-            <li><strong>Marksheets:</strong> Keep clean digital scans (under 2MB, PDF format) of both front and back sides showing university seal and controller sign.</li>
+          <ul className="text-xs text-slate-600 dark:text-slate-400 space-y-1.5 list-disc list-inside leading-relaxed">
+            <li><strong>Income Certificates:</strong> In Gujarat, certificates must be issued by the Mamlatdar or Taluka Development Officer (TDO) within the valid fiscal year.</li>
+            <li><strong>Marksheets:</strong> Keep clean digital scans (under 2MB, PDF) of university grade sheets showing institute stamp and registrar signature.</li>
             <li><strong>Bonafide Letters:</strong> Request institutional bonafide with roll number, program branch, and current academic year at least 10 days before deadlines.</li>
-            <li><strong>Bank Accounts:</strong> Ensure your savings account is seeded with Aadhaar and has active NPCI DBT subvention enabled for government transfers.</li>
+            <li><strong>Bank Accounts:</strong> Ensure your savings account is seeded with Aadhaar and has active NPCI DBT enabled for government subvention transfers.</li>
           </ul>
         </div>
 
         {/* MODAL: Add Custom Document */}
         {showAddModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs" onClick={() => setShowAddModal(false)} />
-            <div className="relative bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-200 z-10 space-y-4">
-              <h3 className="text-base font-bold text-slate-900">Add Prerequisite Document</h3>
+            <div className="fixed inset-0 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-xs" onClick={() => setShowAddModal(false)} />
+            <div className="relative bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 z-10 space-y-4">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Add Prerequisite Document</h3>
               <form onSubmit={handleAddNewDoc} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Document Name</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Document Name</label>
                   <input
                     type="text"
                     value={newDocName}
                     onChange={(e) => setNewDocName(e.target.value)}
-                    placeholder="e.g. Research Publication Abstract"
-                    className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-brand-500 outline-none"
+                    placeholder="e.g. Mamlatdar Income Proof"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl focus:border-brand-500 outline-none"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Document Type</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Document Type</label>
                   <select
                     value={newDocType}
                     onChange={(e) => setNewDocType(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-brand-500 outline-none"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl focus:border-brand-500 outline-none"
                   >
                     <option value="Academic">Academic (Grades, Degrees)</option>
                     <option value="Financial">Financial (Income, Tax Proof)</option>
@@ -212,12 +206,12 @@ export default function Documents() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Notes / Action Details</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Notes / Action Details</label>
                   <textarea
                     value={newDocNotes}
                     onChange={(e) => setNewDocNotes(e.target.value)}
-                    placeholder="e.g. Awaiting faculty signature"
-                    className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-brand-500 outline-none"
+                    placeholder="e.g. Awaiting verification"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl focus:border-brand-500 outline-none"
                     rows={2}
                   />
                 </div>
@@ -226,7 +220,7 @@ export default function Documents() {
                   <button
                     type="button"
                     onClick={() => setShowAddModal(false)}
-                    className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900"
+                    className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                   >
                     Cancel
                   </button>

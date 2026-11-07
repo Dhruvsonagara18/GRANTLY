@@ -6,17 +6,10 @@ import {
   Briefcase,
   Clock,
   TrendingUp,
-  Award,
   ArrowRight,
-  CheckCircle2,
-  AlertTriangle,
-  FileCheck2,
-  Building,
   Target,
-  Calendar,
   ChevronRight,
-  Radar,
-  HelpCircle
+  MapPin
 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import DashboardLayout from '../components/layout/DashboardLayout';
@@ -29,13 +22,13 @@ export default function Dashboard() {
     allScholarships,
     savedIds,
     applications,
-    documents,
     tasks,
     totalPotentialFunding,
-    readiness
+    readiness,
+    theme
   } = useApp();
 
-  // 1. High Matching Recommendations (>= 75% score)
+  // 1. High Matching Recommendations (>= 70% score)
   const recommendations = allScholarships
     .filter(s => s.eligibility?.score >= 70 && !s.deadlineInfo?.isClosed)
     .sort((a, b) => b.eligibility.score - a.eligibility.score)
@@ -64,13 +57,12 @@ export default function Dashboard() {
   const chartData = [
     { name: 'Interested', value: statusCounts.Interested, color: '#94A3B8' },
     { name: 'Preparing Documents', value: statusCounts['Preparing Documents'], color: '#F59E0B' },
-    { name: 'Applied / In Review', value: statusCounts.Applied + statusCounts['Under Review'], color: '#4F46E5' },
+    { name: 'Applied / In Review', value: statusCounts.Applied + statusCounts['Under Review'], color: '#6366F1' },
     { name: 'Approved', value: statusCounts.Approved, color: '#10B981' },
     { name: 'Rejected', value: statusCounts.Rejected, color: '#EF4444' }
   ].filter(d => d.value > 0);
 
-  // Fallback if no apps yet
-  const displayChartData = chartData.length > 0 ? chartData : [{ name: 'No Applications', value: 1, color: '#E2E8F0' }];
+  const displayChartData = chartData.length > 0 ? chartData : [{ name: 'No Applications', value: 1, color: theme === 'dark' ? '#334155' : '#E2E8F0' }];
 
   // 4. Pending Tasks / Next Steps
   const pendingTasks = tasks.filter(t => !t.completed).slice(0, 4);
@@ -88,10 +80,10 @@ export default function Dashboard() {
               <span>Personalized Opportunity Stream</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-              Welcome back, {user?.name || "Student"}!
+              Welcome back, {user?.name || "Dhruv Sonagara"}!
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
-              Based on your <strong className="text-white">{user?.education?.degree || "academic profile"}</strong> and <strong className="text-white">{user?.academics?.cgpa || 8.4} CGPA</strong>, you have matching funding opportunities open right now.
+              Based on your <strong className="text-white">{user?.education?.degree || "academic profile"}</strong> and <strong className="text-white">{user?.academics?.cgpa || 8.6} CGPA</strong> in <strong className="text-white">{user?.city || "Dwarka"}, {user?.state || "Gujarat"}</strong>, you have matching funding opportunities open right now.
             </p>
           </div>
 
@@ -115,51 +107,51 @@ export default function Dashboard() {
 
         {/* KEY PLATFORM METRICS */}
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-xs hover:border-brand-200 transition-colors">
-            <div className="flex items-center justify-between text-slate-400 mb-2">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-xs hover:border-brand-200 dark:hover:border-slate-700 transition-colors">
+            <div className="flex items-center justify-between text-slate-400 dark:text-slate-500 mb-2">
               <span className="text-[11px] font-bold uppercase tracking-wider">Matching Grants</span>
-              <Target className="w-4 h-4 text-brand-600" />
+              <Target className="w-4 h-4 text-brand-600 dark:text-brand-400" />
             </div>
-            <p className="text-2xl sm:text-3xl font-black text-slate-900">{recommendations.length}</p>
-            <p className="text-[11px] text-emerald-600 font-semibold mt-1">≥70% compatibility</p>
+            <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">{recommendations.length}</p>
+            <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1">≥70% compatibility</p>
           </div>
 
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-xs hover:border-brand-200 transition-colors">
-            <div className="flex items-center justify-between text-slate-400 mb-2">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-xs hover:border-brand-200 dark:hover:border-slate-700 transition-colors">
+            <div className="flex items-center justify-between text-slate-400 dark:text-slate-500 mb-2">
               <span className="text-[11px] font-bold uppercase tracking-wider">Saved Watchlist</span>
-              <Bookmark className="w-4 h-4 text-indigo-600" />
+              <Bookmark className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
             </div>
-            <p className="text-2xl sm:text-3xl font-black text-slate-900">{savedIds.length}</p>
-            <p className="text-[11px] text-slate-500 font-medium mt-1">Bookmarked</p>
+            <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">{savedIds.length}</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1">Bookmarked</p>
           </div>
 
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-xs hover:border-brand-200 transition-colors">
-            <div className="flex items-center justify-between text-slate-400 mb-2">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-xs hover:border-brand-200 dark:hover:border-slate-700 transition-colors">
+            <div className="flex items-center justify-between text-slate-400 dark:text-slate-500 mb-2">
               <span className="text-[11px] font-bold uppercase tracking-wider">In Progress</span>
-              <Briefcase className="w-4 h-4 text-amber-600" />
+              <Briefcase className="w-4 h-4 text-amber-600 dark:text-amber-400" />
             </div>
-            <p className="text-2xl sm:text-3xl font-black text-slate-900">{applications.length}</p>
-            <p className="text-[11px] text-amber-600 font-medium mt-1">Active pipelines</p>
+            <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">{applications.length}</p>
+            <p className="text-[11px] text-amber-600 dark:text-amber-400 font-medium mt-1">Active pipelines</p>
           </div>
 
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-xs hover:border-brand-200 transition-colors">
-            <div className="flex items-center justify-between text-slate-400 mb-2">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-xs hover:border-brand-200 dark:hover:border-slate-700 transition-colors">
+            <div className="flex items-center justify-between text-slate-400 dark:text-slate-500 mb-2">
               <span className="text-[11px] font-bold uppercase tracking-wider">Urgent Window</span>
-              <Clock className="w-4 h-4 text-rose-600" />
+              <Clock className="w-4 h-4 text-rose-600 dark:text-rose-400" />
             </div>
-            <p className="text-2xl sm:text-3xl font-black text-rose-600">{urgentDeadlines.length}</p>
-            <p className="text-[11px] text-rose-600 font-semibold mt-1">Closing in ≤ 7 days</p>
+            <p className="text-2xl sm:text-3xl font-black text-rose-600 dark:text-rose-400">{urgentDeadlines.length}</p>
+            <p className="text-[11px] text-rose-600 dark:text-rose-400 font-semibold mt-1">Closing in ≤ 7 days</p>
           </div>
 
-          <div className="col-span-2 lg:col-span-1 bg-gradient-to-br from-brand-50 to-indigo-50/50 rounded-2xl p-4 sm:p-5 border border-brand-200 shadow-xs">
-            <div className="flex items-center justify-between text-brand-700 mb-2">
+          <div className="col-span-2 lg:col-span-1 bg-gradient-to-br from-brand-50 to-indigo-50/50 dark:from-slate-900 dark:to-brand-950/40 rounded-2xl p-4 sm:p-5 border border-brand-200 dark:border-slate-700 shadow-xs">
+            <div className="flex items-center justify-between text-brand-700 dark:text-brand-300 mb-2">
               <span className="text-[11px] font-bold uppercase tracking-wider">Potential Funding</span>
               <TrendingUp className="w-4 h-4" />
             </div>
-            <p className="text-xl sm:text-2xl font-black text-brand-900">
+            <p className="text-xl sm:text-2xl font-black text-brand-900 dark:text-brand-200">
               ₹{(totalPotentialFunding / 100000).toFixed(1)} Lakhs
             </p>
-            <p className="text-[10px] text-brand-600 mt-1">Matching opportunities (Distinguished from disbursed funds)</p>
+            <p className="text-[10px] text-brand-600 dark:text-brand-400 mt-1">Total matched value</p>
           </div>
         </div>
 
@@ -171,17 +163,17 @@ export default function Dashboard() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-brand-600" />
+                  <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-brand-600 dark:text-brand-400" />
                     <span>Recommended For You</span>
                   </h2>
-                  <p className="text-xs text-slate-500">
-                    Highest compatibility opportunities based on your education tier, CGPA, and state.
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Highest compatibility opportunities based on your {user?.education?.degree} & {user?.state} domicile.
                   </p>
                 </div>
                 <Link
                   to="/explore"
-                  className="text-xs font-semibold text-brand-600 hover:text-brand-700 flex items-center gap-1"
+                  className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 flex items-center gap-1"
                 >
                   <span>View All</span>
                   <ChevronRight className="w-3.5 h-3.5" />
@@ -196,49 +188,49 @@ export default function Dashboard() {
             </div>
 
             {/* Widget B: Upcoming Deadlines Radar */}
-            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center">
                     <Clock className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-slate-900 text-sm">Critical Deadlines Radar</h3>
-                    <p className="text-xs text-slate-500">Prioritize submissions closing within this week</p>
+                    <h3 className="font-bold text-slate-900 dark:text-white text-sm">Critical Deadlines Radar</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Prioritize submissions closing within this week</p>
                   </div>
                 </div>
                 <Link
                   to="/deadlines"
-                  className="text-xs font-semibold text-brand-600 hover:text-brand-700"
+                  className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300"
                 >
                   View Deadline Calendar
                 </Link>
               </div>
 
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {urgentDeadlines.map((sch) => (
                   <div key={sch.id} className="py-3 flex items-center justify-between gap-4">
                     <div className="min-w-0">
                       <Link
                         to={`/scholarship/${sch.id}`}
-                        className="text-xs font-bold text-slate-900 hover:text-brand-600 transition-colors truncate block"
+                        className="text-xs font-bold text-slate-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors truncate block"
                       >
                         {sch.title}
                       </Link>
-                      <p className="text-[11px] text-slate-400">{sch.organization} • {sch.amount}</p>
+                      <p className="text-[11px] text-slate-400 dark:text-slate-500">{sch.organization} • {sch.amount}</p>
                     </div>
 
                     <div className="flex items-center gap-3 shrink-0">
                       <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${
                         sch.deadlineInfo?.isUrgent
-                          ? 'bg-rose-50 text-rose-700 border border-rose-200'
-                          : 'bg-amber-50 text-amber-700 border border-amber-200'
+                          ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
+                          : 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
                       }`}>
                         {sch.deadlineInfo?.label}
                       </span>
                       <Link
                         to={`/scholarship/${sch.id}`}
-                        className="px-3 py-1 rounded-lg bg-slate-900 hover:bg-brand-600 text-white text-xs font-medium transition-colors"
+                        className="px-3 py-1 rounded-lg bg-slate-900 hover:bg-brand-600 dark:bg-slate-800 dark:hover:bg-brand-600 text-white text-xs font-medium transition-colors"
                       >
                         Review
                       </Link>
@@ -249,32 +241,32 @@ export default function Dashboard() {
             </div>
 
             {/* Widget G: Application Pipeline History */}
-            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-                  <Briefcase className="w-4 h-4 text-brand-600" />
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+                  <Briefcase className="w-4 h-4 text-brand-600 dark:text-brand-400" />
                   <span>Recent Application Pipeline</span>
                 </h3>
-                <Link to="/applications" className="text-xs font-semibold text-brand-600 hover:text-brand-700">
+                <Link to="/applications" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
                   Manage Tracker
                 </Link>
               </div>
 
               <div className="space-y-3">
                 {applications.slice(0, 3).map((app) => (
-                  <div key={app.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div key={app.id} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-xs text-slate-900">{app.scholarshipTitle}</span>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-brand-100 text-brand-800">
+                        <span className="font-bold text-xs text-slate-900 dark:text-white">{app.scholarshipTitle}</span>
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-brand-100 dark:bg-brand-900/60 text-brand-800 dark:text-brand-200">
                           {app.status}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-500 mt-1">{app.notes}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{app.notes}</p>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-xs font-bold text-brand-700">{app.awardAmount}</p>
-                      <p className="text-[10px] text-slate-400">Target: {app.targetSubmitDate}</p>
+                      <p className="text-xs font-bold text-brand-700 dark:text-brand-400">{app.awardAmount}</p>
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500">Target: {app.targetSubmitDate}</p>
                     </div>
                   </div>
                 ))}
@@ -301,7 +293,7 @@ export default function Dashboard() {
               </div>
 
               <p className="text-xs text-brand-100 leading-relaxed">
-                {readiness.label}: {readiness.breakdown.documents.percentage}% of your required documents are verified and ready.
+                {readiness.label}: {readiness.breakdown.documents.percentage}% of prerequisite documents are verified and ready in your locker.
               </p>
 
               <div className="pt-2">
@@ -315,8 +307,8 @@ export default function Dashboard() {
             </div>
 
             {/* Widget C: Application Status Donut Chart */}
-            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
-              <h3 className="font-bold text-slate-900 text-sm">Application Breakdown</h3>
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
+              <h3 className="font-bold text-slate-900 dark:text-white text-sm">Application Breakdown</h3>
 
               <div className="h-48 w-full flex items-center justify-center">
                 <ResponsiveContainer width="100%" height="100%">
@@ -334,7 +326,14 @@ export default function Dashboard() {
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: theme === 'dark' ? '#1E293B' : '#FFFFFF',
+                        borderColor: theme === 'dark' ? '#334155' : '#E2E8F0',
+                        color: theme === 'dark' ? '#FFFFFF' : '#000000',
+                        borderRadius: '0.75rem'
+                      }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -343,36 +342,35 @@ export default function Dashboard() {
                 {chartData.map((d, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: d.color }} />
-                    <span className="text-slate-600 truncate">{d.name} ({d.value})</span>
+                    <span className="text-slate-600 dark:text-slate-400 truncate">{d.name} ({d.value})</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Widget E: Your Next Steps (Planner Tasks) */}
-            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+            {/* Widget E: Actionable Next Steps (Planner Tasks) */}
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-                  <FileCheck2 className="w-4 h-4 text-brand-600" />
-                  <span>Actionable Next Steps</span>
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm">
+                  Actionable Next Steps
                 </h3>
-                <Link to="/planner" className="text-xs font-semibold text-brand-600 hover:text-brand-700">
+                <Link to="/planner" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
                   Open Planner
                 </Link>
               </div>
 
               <div className="space-y-2.5">
                 {pendingTasks.map((t) => (
-                  <div key={t.id} className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-xs">
+                  <div key={t.id} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 text-xs">
                     <div className="flex items-start justify-between gap-2">
-                      <p className="font-semibold text-slate-900 leading-snug">{t.title}</p>
+                      <p className="font-semibold text-slate-900 dark:text-white leading-snug">{t.title}</p>
                       <span className={`px-1.5 py-0.5 text-[9px] font-bold rounded ${
-                        t.priority === 'High' ? 'bg-rose-100 text-rose-700' : 'bg-slate-200 text-slate-700'
+                        t.priority === 'High' ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
                       }`}>
                         {t.priority}
                       </span>
                     </div>
-                    <p className="text-[10px] text-slate-400 mt-1">Due {t.dueDate} • {t.relatedScholarshipTitle || t.category}</p>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Due {t.dueDate} • {t.relatedScholarshipTitle || t.category}</p>
                   </div>
                 ))}
               </div>

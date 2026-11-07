@@ -24,7 +24,7 @@ export default function Assistant() {
     {
       id: 'msg-1',
       sender: 'assistant',
-      text: `Hello ${user?.name?.split(' ')[0] || 'there'}! I am **Grantly Assistant**, your contextual opportunity guide. I evaluate your profile (${user?.education?.degree}, ${user?.academics?.cgpa} CGPA, ${user?.state}) against our 16 cataloged scholarships. How can I assist your application journey today?`,
+      text: `Hello ${user?.name?.split(' ')[0] || 'Dhruv'}! I am **Grantly Assistant**, your personal opportunity advisor. I evaluate your profile (${user?.education?.degree}, ${user?.academics?.cgpa} CGPA, ${user?.city}, ${user?.state}) against our cataloged scholarships. How can I assist your application journey today?`,
       timestamp: 'Just now'
     }
   ]);
@@ -71,7 +71,7 @@ export default function Assistant() {
           .filter((s) => s.eligibility?.score >= 75)
           .slice(0, 3);
         recommendations = topMatches;
-        reply = `Based on your **${user?.education?.degree}**, **${user?.academics?.cgpa} CGPA**, and **${user?.financial?.socialCategory}** status, here are your top 3 matching programs:\n\n` +
+        reply = `Based on your **${user?.education?.degree}**, **${user?.academics?.cgpa} CGPA**, and **${user?.financial?.socialCategory}** status in **${user?.state}**, here are your top 3 matching programs:\n\n` +
           topMatches.map((s) => `• **${s.title}** (${s.amount}) — **${s.eligibility.score}% Match**. Deadline: ${s.deadlineInfo.label}.`).join('\n\n') +
           `\n\nAll three satisfy your academic cutoffs and income criteria.`;
       } else if (q.includes("not eligible") || q.includes("why") || q.includes("gap")) {
@@ -81,7 +81,7 @@ export default function Assistant() {
             const gap = s.eligibility?.gaps?.[0] || { criterion: "Criteria", advice: "Check education level or domicile." };
             return `• **${s.title}**: ${gap.advice}`;
           }).join('\n\n') +
-          `\n\nRemember: Our engine gives transparent compatibility scores so you never waste time applying to restricted state or doctoral quotas.`;
+          `\n\nOur system provides transparent compatibility scores so you never waste time applying to restricted state or doctoral quotas.`;
       } else if (q.includes("document") || q.includes("checklist")) {
         const pending = documents.filter((d) => d.status !== 'Ready');
         reply = `Your global Document Readiness score is currently **${readiness.score}%**.\n\n` +
@@ -101,7 +101,7 @@ export default function Assistant() {
         reply = `Here is a quick comparison between your top opportunities:\n\n` +
           `1. **${top2[0].title}**: ${top2[0].amount}, Private STEM grant, Minimum CGPA: ${top2[0].academicCriteria?.minCGPA || 8.0}, closes in ${top2[0].deadlineInfo.label}.\n\n` +
           `2. **${top2[1].title}**: ${top2[1].amount}, Government Need-cum-Merit scheme, Household income limit: ₹4.5 LPA, closes in ${top2[1].deadlineInfo.label}.\n\n` +
-          `You can also open the full 3-way Comparison Studio from the sidebar!`;
+          `You can also open the full 3-way Comparison Studio from the navigation sidebar!`;
       } else {
         reply = `I can help you navigate scholarship discovery, explain eligibility criteria, verify document checklists, or prioritize deadlines. Try asking: "Which scholarships match my profile?" or "What documents do I need?"`;
       }
@@ -117,12 +117,12 @@ export default function Assistant() {
         }
       ]);
       setIsTyping(false);
-    }, 700);
+    }, 600);
   };
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 max-w-4xl mx-auto h-[calc(100vh-140px)] flex flex-col">
+      <div className="space-y-4 max-w-4xl mx-auto h-[calc(100vh-140px)] flex flex-col">
         {/* HEADER */}
         <div className="flex items-center justify-between shrink-0">
           <div>
@@ -130,21 +130,21 @@ export default function Assistant() {
               <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white shadow-sm">
                 <BotMessageSquare className="w-4 h-4" />
               </div>
-              <h1 className="text-xl font-black text-slate-900 tracking-tight">
+              <h1 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
                 Grantly Assistant
               </h1>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-100 text-brand-700">
-                Rule-Based MVP Engine
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-100 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
+                AI Opportunity Advisor
               </span>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Contextual query engine powered by real student profile & scholarship datasets
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Contextual guidance engine powered by verified student profile & scholarship datasets
             </p>
           </div>
         </div>
 
         {/* CHAT MESSAGES CONTAINER */}
-        <div className="flex-1 bg-white rounded-3xl p-4 sm:p-6 border border-slate-200 shadow-xs overflow-y-auto space-y-4">
+        <div className="flex-1 bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-xs overflow-y-auto space-y-4 transition-colors">
           {messages.map((msg) => {
             const isAsst = msg.sender === 'assistant';
             return (
@@ -153,7 +153,7 @@ export default function Assistant() {
                 className={`flex gap-3 ${isAsst ? 'justify-start' : 'justify-end'}`}
               >
                 {isAsst && (
-                  <div className="w-8 h-8 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center shrink-0 mt-1">
+                  <div className="w-8 h-8 rounded-xl bg-brand-100 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800 flex items-center justify-center shrink-0 mt-1">
                     <Sparkles className="w-4 h-4" />
                   </div>
                 )}
@@ -161,16 +161,16 @@ export default function Assistant() {
                 <div
                   className={`max-w-2xl rounded-2xl p-4 text-xs leading-relaxed ${
                     isAsst
-                      ? 'bg-slate-50 text-slate-800 border border-slate-200/80'
-                      : 'bg-brand-600 text-white shadow-xs'
+                      ? 'bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-100 border border-slate-200/80 dark:border-slate-700'
+                      : 'bg-brand-600 dark:bg-brand-600 text-white shadow-xs'
                   }`}
                 >
                   <div className="whitespace-pre-line">{msg.text}</div>
 
                   {/* Inline recommended scholarship cards */}
                   {msg.recommendations && msg.recommendations.length > 0 && (
-                    <div className="mt-4 pt-3 border-t border-slate-200 space-y-2">
-                      <p className="font-bold text-[11px] text-slate-500 uppercase tracking-wider">
+                    <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700 space-y-2">
+                      <p className="font-bold text-[11px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         Referenced Opportunities:
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -178,11 +178,11 @@ export default function Assistant() {
                           <Link
                             key={sch.id}
                             to={`/scholarship/${sch.id}`}
-                            className="p-2.5 rounded-xl bg-white border border-slate-200 hover:border-brand-300 transition-colors block text-left"
+                            className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-brand-300 dark:hover:border-brand-600 transition-colors block text-left"
                           >
-                            <p className="font-bold text-slate-900 truncate">{sch.title}</p>
-                            <p className="text-[10px] text-brand-700 font-extrabold">{sch.amount}</p>
-                            <p className="text-[10px] text-slate-400 mt-0.5">Match: {sch.eligibility?.score}%</p>
+                            <p className="font-bold text-slate-900 dark:text-white truncate">{sch.title}</p>
+                            <p className="text-[10px] text-brand-700 dark:text-brand-400 font-extrabold">{sch.amount}</p>
+                            <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">Match: {sch.eligibility?.score}%</p>
                           </Link>
                         ))}
                       </div>
@@ -191,7 +191,7 @@ export default function Assistant() {
 
                   <span
                     className={`block text-[10px] mt-2 ${
-                      isAsst ? 'text-slate-400' : 'text-brand-200'
+                      isAsst ? 'text-slate-400 dark:text-slate-500' : 'text-brand-200'
                     }`}
                   >
                     {msg.timestamp}
@@ -203,13 +203,13 @@ export default function Assistant() {
 
           {isTyping && (
             <div className="flex gap-3 justify-start">
-              <div className="w-8 h-8 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-brand-100 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800 flex items-center justify-center shrink-0">
                 <Sparkles className="w-4 h-4 animate-spin" />
               </div>
-              <div className="bg-slate-50 text-slate-500 border border-slate-200 rounded-2xl p-3 text-xs flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" />
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:0.2s]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:0.4s]" />
+              <div className="bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 rounded-2xl p-3 text-xs flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce [animation-delay:0.2s]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce [animation-delay:0.4s]" />
               </div>
             </div>
           )}
@@ -219,14 +219,14 @@ export default function Assistant() {
 
         {/* QUICK PROMPTS CHIPS */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 shrink-0">
-          <span className="text-[11px] font-bold text-slate-400 shrink-0 uppercase tracking-wider">
+          <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 shrink-0 uppercase tracking-wider">
             Suggested:
           </span>
           {quickPrompts.map((prompt, idx) => (
             <button
               key={idx}
               onClick={() => handleSendMessage(prompt)}
-              className="px-3 py-1.5 rounded-xl bg-white hover:bg-brand-50 hover:text-brand-700 border border-slate-200 text-slate-600 text-xs font-medium whitespace-nowrap transition-colors shadow-2xs"
+              className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-brand-50 dark:hover:bg-brand-950/50 hover:text-brand-700 dark:hover:text-brand-300 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium whitespace-nowrap transition-colors shadow-2xs cursor-pointer"
             >
               {prompt}
             </button>
@@ -234,18 +234,18 @@ export default function Assistant() {
         </div>
 
         {/* INPUT BOX */}
-        <div className="shrink-0 bg-white rounded-2xl border border-slate-200 p-2 flex items-center gap-2 shadow-xs">
+        <div className="shrink-0 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-2 flex items-center gap-2 shadow-xs transition-colors">
           <input
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
             placeholder="Ask Grantly Assistant about eligibility rules, cutoffs, or deadlines..."
-            className="flex-1 px-3 py-2 text-xs text-slate-900 outline-none bg-transparent"
+            className="flex-1 px-3 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none bg-transparent"
           />
           <button
             onClick={() => handleSendMessage()}
-            className="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all"
+            className="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
           >
             <span>Send</span>
             <Send className="w-3.5 h-3.5" />

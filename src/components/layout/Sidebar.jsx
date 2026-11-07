@@ -4,7 +4,6 @@ import {
   LayoutDashboard,
   Compass,
   Sparkles,
-  Radar,
   ArrowLeftRight,
   Bookmark,
   Briefcase,
@@ -17,15 +16,17 @@ import {
   User,
   Settings,
   LogOut,
-  RotateCcw,
   X,
   Award,
-  ChevronRight
+  Sun,
+  Moon,
+  MapPin
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import Avatar from '../common/Avatar';
 
 export default function Sidebar({ isOpen, onClose }) {
-  const { user, logout, resetDemo, readiness, applications, savedIds } = useApp();
+  const { user, logout, readiness, applications, savedIds, theme, toggleTheme } = useApp();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -76,22 +77,22 @@ export default function Sidebar({ isOpen, onClose }) {
   ];
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-white border-r border-slate-200">
+    <div className="flex flex-col h-full bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 transition-colors">
       {/* Brand Header */}
-      <div className="flex items-center justify-between px-6 h-20 border-b border-slate-100">
+      <div className="flex items-center justify-between px-6 h-20 border-b border-slate-100 dark:border-slate-800">
         <NavLink to="/dashboard" className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-700 via-brand-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-brand-500/25">
             <Award className="w-5 h-5 text-white" />
           </div>
           <div>
-            <span className="text-xl font-bold tracking-tight text-slate-900">GRANTLY</span>
-            <p className="text-[10px] uppercase font-semibold text-brand-600 tracking-wider">Opportunity OS</p>
+            <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white">GRANTLY</span>
+            <p className="text-[10px] uppercase font-bold text-brand-600 dark:text-brand-400 tracking-wider">Opportunity OS</p>
           </div>
         </NavLink>
         {onClose && (
           <button
             onClick={onClose}
-            className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+            className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             <X className="w-5 h-5" />
           </button>
@@ -99,21 +100,21 @@ export default function Sidebar({ isOpen, onClose }) {
       </div>
 
       {/* Student Readiness Mini-Banner */}
-      <div className="mx-4 my-3 p-3 rounded-xl bg-gradient-to-br from-brand-50 via-indigo-50 to-purple-50 border border-brand-100/80">
+      <div className="mx-4 my-3 p-3 rounded-2xl bg-gradient-to-br from-brand-50 via-indigo-50/60 to-purple-50/40 dark:from-slate-800 dark:via-slate-800/80 dark:to-brand-950/40 border border-brand-100/80 dark:border-slate-700">
         <div className="flex items-center justify-between text-xs mb-1.5">
-          <span className="font-semibold text-brand-900 flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5 text-brand-600" />
+          <span className="font-bold text-brand-900 dark:text-brand-200 flex items-center gap-1">
+            <Sparkles className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
             Readiness Score
           </span>
-          <span className="font-bold text-brand-700">{readiness.score}/100</span>
+          <span className="font-extrabold text-brand-700 dark:text-brand-300">{readiness.score}/100</span>
         </div>
-        <div className="w-full h-1.5 bg-brand-200/50 rounded-full overflow-hidden">
+        <div className="w-full h-1.5 bg-brand-200/50 dark:bg-slate-700 rounded-full overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-brand-600 to-indigo-600 rounded-full transition-all duration-500"
             style={{ width: `${readiness.score}%` }}
           />
         </div>
-        <p className="text-[11px] text-slate-500 mt-1.5 truncate">
+        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 truncate">
           {readiness.label}
         </p>
       </div>
@@ -122,7 +123,7 @@ export default function Sidebar({ isOpen, onClose }) {
       <div className="flex-1 overflow-y-auto px-4 py-2 space-y-6">
         {navGroups.map((group, idx) => (
           <div key={idx} className="space-y-1">
-            <div className="px-3 text-[11px] font-bold tracking-wider uppercase text-slate-400">
+            <div className="px-3 text-[11px] font-bold tracking-wider uppercase text-slate-400 dark:text-slate-500">
               {group.title}
             </div>
             <div className="space-y-0.5">
@@ -136,9 +137,9 @@ export default function Sidebar({ isOpen, onClose }) {
                     className={({ isActive }) =>
                       `flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
                         isActive
-                          ? 'bg-brand-50 text-brand-700 font-semibold shadow-xs'
-                          : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                      } ${item.highlight ? 'border border-brand-200/60 bg-brand-50/30' : ''}`
+                          ? 'bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 font-bold shadow-xs'
+                          : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'
+                      } ${item.highlight ? 'border border-brand-200/60 dark:border-brand-800/60 bg-brand-50/30 dark:bg-brand-950/30' : ''}`
                     }
                   >
                     <div className="flex items-center gap-2.5">
@@ -146,7 +147,7 @@ export default function Sidebar({ isOpen, onClose }) {
                       <span>{item.name}</span>
                     </div>
                     {item.badge && (
-                      <span className="px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-brand-100 text-brand-700">
+                      <span className="px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-brand-100 dark:bg-brand-900 text-brand-700 dark:text-brand-300">
                         {item.badge}
                       </span>
                     )}
@@ -163,32 +164,38 @@ export default function Sidebar({ isOpen, onClose }) {
         ))}
       </div>
 
-      {/* Sidebar Footer with Reset Demo & Profile info */}
-      <div className="p-4 border-t border-slate-100 space-y-2 bg-slate-50/50">
+      {/* Sidebar Footer with Theme Toggle & Profile Info */}
+      <div className="p-4 border-t border-slate-100 dark:border-slate-800 space-y-3 bg-slate-50/50 dark:bg-slate-900/50">
+        {/* Quick Theme Switcher Pill */}
         <button
-          onClick={resetDemo}
-          className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 text-[11px] font-medium text-slate-600 hover:text-brand-700 bg-white hover:bg-brand-50 border border-slate-200 rounded-lg transition-colors"
-          title="Reset sample profile, applications, and documents to fresh demo benchmark"
+          onClick={toggleTheme}
+          className="w-full flex items-center justify-between py-1.5 px-3 text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl transition-colors"
+          title="Toggle Dark / Light Mode"
         >
-          <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
-          <span>Reset Demo Data</span>
+          <div className="flex items-center gap-1.5">
+            {theme === 'dark' ? <Moon className="w-3.5 h-3.5 text-indigo-400" /> : <Sun className="w-3.5 h-3.5 text-amber-500" />}
+            <span>Theme: {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}</span>
+          </div>
+          <span className="text-[10px] text-brand-600 dark:text-brand-400 uppercase font-bold">Switch</span>
         </button>
 
-        <div className="flex items-center justify-between pt-2">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <img
-              src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"}
-              alt={user?.name || "User"}
-              className="w-8 h-8 rounded-full object-cover border border-brand-200 shrink-0"
-            />
+        {/* Profile Card with Avatar */}
+        <div className="flex items-center justify-between pt-1">
+          <NavLink to="/profile" onClick={onClose} className="flex items-center gap-2.5 min-w-0 group">
+            <Avatar src={user?.avatar} name={user?.name || "Dhruv Sonagara"} size="sm" />
             <div className="min-w-0 truncate">
-              <p className="text-xs font-semibold text-slate-800 truncate">{user?.name || "Student"}</p>
-              <p className="text-[10px] text-slate-500 truncate">{user?.education?.degree || "Undergraduate"}</p>
+              <p className="text-xs font-bold text-slate-800 dark:text-slate-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors truncate">
+                {user?.name || "Dhruv Sonagara"}
+              </p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate flex items-center gap-1">
+                <MapPin className="w-2.5 h-2.5" />
+                <span>{user?.city || "Dwarka"}, {user?.state || "Gujarat"}</span>
+              </p>
             </div>
-          </div>
+          </NavLink>
           <button
             onClick={handleLogout}
-            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors"
             title="Log Out"
           >
             <LogOut className="w-4 h-4" />
@@ -208,7 +215,7 @@ export default function Sidebar({ isOpen, onClose }) {
       {/* Mobile Sidebar Overlay */}
       {isOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden">
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity" onClick={onClose} />
+          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity" onClick={onClose} />
           <div className="relative flex flex-col w-72 max-w-xs h-full z-10 animate-in slide-in-from-left duration-200">
             {sidebarContent}
           </div>

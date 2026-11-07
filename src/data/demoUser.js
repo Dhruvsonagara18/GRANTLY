@@ -1,35 +1,36 @@
 /**
- * Pre-filled demo user profile for judge presentation & instant exploration
- * Meets all criteria from Section 5, 6, 21, and 29.
+ * Centralized User Profile and Pre-seeded Opportunity State for GRANTLY
+ * Default user: Dhruv Sonagara (Dwarka, Gujarat, India)
  */
 
-export const INITIAL_DEMO_USER = {
-  id: "usr-demo-01",
-  name: "Aarav Sharma",
-  email: "aarav.sharma@grantly.demo",
-  avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-  phone: "+91 98765 43210",
+export const INITIAL_USER_PROFILE = {
+  id: "usr-dhruv-01",
+  name: "Dhruv Sonagara",
+  email: "dhruv.sonagara@grantly.edu",
+  avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200&auto=format&fit=crop&q=80",
+  phone: "+91 98250 12345",
   gender: "Male",
-  state: "Maharashtra",
-  city: "Pune",
+  city: "Dwarka",
+  state: "Gujarat",
+  country: "India",
   education: {
     level: "Undergraduate",
-    degree: "B.Tech in Computer Science & Engineering",
-    institution: "Pune Institute of Computer Technology (PICT)",
+    degree: "B.Tech in Computer Engineering",
+    institution: "Government Engineering College, Gujarat (GTU)",
     year: "3rd Year",
     expectedGraduation: "2027",
-    specialization: "Artificial Intelligence & Data Engineering"
+    specialization: "Software Systems & Cloud Architecture"
   },
   academics: {
-    cgpa: 8.4,
+    cgpa: 8.6,
     cgpaScale: 10,
-    percentage: 84,
-    twelfthPercentage: 88.5,
-    tenthPercentage: 92.0,
+    percentage: 86,
+    twelfthPercentage: 89.2,
+    tenthPercentage: 92.4,
     hasActiveBacklogs: false
   },
   financial: {
-    annualFamilyIncome: 420000, // ₹4.2 LPA
+    annualFamilyIncome: 380000, // ₹3.8 LPA
     incomeCategory: "Economically Weaker Section (EWS)",
     socialCategory: "General-EWS",
     hasIncomeCertificate: true,
@@ -46,35 +47,58 @@ export const INITIAL_DEMO_USER = {
   createdAt: "2026-10-15T09:00:00Z"
 };
 
+// Alias for backward compatibility if imported elsewhere
+export const INITIAL_DEMO_USER = INITIAL_USER_PROFILE;
+
 export const INITIAL_SAVED_SCHOLARSHIPS = [
+  "sch-004", // MYSY Gujarat
   "sch-001", // Apex STEM
-  "sch-002", // Pragati Need-Cum-Merit
-  "sch-004", // Maharashtra State Higher Education
+  "sch-002", // Pragati National Grant
   "sch-007"  // NextGen Software Engineers
 ];
 
 export const INITIAL_APPLICATIONS = [
   {
     id: "app-101",
+    scholarshipId: "sch-004",
+    scholarshipTitle: "Mukhyamantri Yuva Swavalamban Yojana (MYSY - Gujarat)",
+    organization: "Education Department, Government of Gujarat",
+    awardAmount: "₹1,00,000 / year",
+    amountValue: 100000,
+    status: "Under Review",
+    appliedDate: "2026-10-28",
+    targetSubmitDate: "2026-10-28",
+    deadline: "2026-11-15",
+    notes: "Applied via MYSY state portal. Institute scrutiny cleared; awaiting nodal officer disbursement authorization.",
+    progressPercent: 90,
+    timeline: [
+      { date: "2026-10-15", title: "Discovered Opportunity", description: "Identified via Gujarat state quota matching (100% Match)" },
+      { date: "2026-10-20", title: "Eligibility Confirmed", description: "Verified 8.6 CGPA & Gujarat domicile certificate" },
+      { date: "2026-10-28", title: "Application Submitted", description: "Uploaded documents on MYSY Gujarat portal" },
+      { date: "2026-11-03", title: "College Verified", description: "GEC Principal desk approved certificate scrutiny" }
+    ]
+  },
+  {
+    id: "app-102",
     scholarshipId: "sch-001",
     scholarshipTitle: "Apex STEM Future Leaders Fellowship",
     organization: "Global Technology Foundation",
     awardAmount: "₹2,50,000 / year",
     amountValue: 250000,
-    status: "Preparing Documents", // Statuses: Interested, Preparing Documents, Applied, Under Review, Approved, Rejected
+    status: "Preparing Documents",
     appliedDate: null,
     targetSubmitDate: "2026-11-09",
     deadline: "2026-11-10",
-    notes: "Need to finish faculty recommendation letter from Prof. Kulkarni and polish GitHub portfolio.",
+    notes: "Need to attach faculty recommendation letter and finalize Statement of Purpose.",
     progressPercent: 75,
     timeline: [
-      { date: "2026-10-20", title: "Discovered Opportunity", description: "Identified via Grantly Smart Match (94% Compatibility)" },
-      { date: "2026-10-25", title: "Eligibility Confirmed", description: "Checked CGPA 8.4 vs required 8.2; verified all criteria" },
-      { date: "2026-11-02", title: "Document Checklist Initiated", description: "Uploaded college ID, marksheets & SOP draft" }
+      { date: "2026-10-20", title: "Discovered Opportunity", description: "Smart Match compatibility 96%" },
+      { date: "2026-10-25", title: "Eligibility Confirmed", description: "Satisfies CGPA 8.6 vs required 8.2" },
+      { date: "2026-11-02", title: "Document Checklist Initiated", description: "Uploaded academic marksheets and portfolio draft" }
     ]
   },
   {
-    id: "app-102",
+    id: "app-103",
     scholarshipId: "sch-002",
     scholarshipTitle: "Pragati National Need-Cum-Merit Support Grant",
     organization: "Ministry of Education & Human Resources",
@@ -84,31 +108,12 @@ export const INITIAL_APPLICATIONS = [
     appliedDate: "2026-11-01",
     targetSubmitDate: "2026-11-01",
     deadline: "2026-11-13",
-    notes: "Submitted via NSP portal. Application tracking acknowledgement #NSP-2026-88192.",
-    progressPercent: 100,
+    notes: "Submitted on National Scholarship Portal. Acknowledgement #NSP-2026-88192.",
+    progressPercent: 85,
     timeline: [
-      { date: "2026-10-18", title: "Discovered Opportunity", description: "Ranked as High Match on National quota" },
-      { date: "2026-10-22", title: "Documents Verified", description: "Income certificate verified from Tehsildar" },
-      { date: "2026-11-01", title: "Application Submitted", description: "Form successfully submitted on external government portal" }
-    ]
-  },
-  {
-    id: "app-103",
-    scholarshipId: "sch-004",
-    scholarshipTitle: "Maharashtra State Higher Education Assistance Scheme",
-    organization: "Directorate of Technical Education, Maharashtra",
-    awardAmount: "₹65,000 / year",
-    amountValue: 65000,
-    status: "Under Review",
-    appliedDate: "2026-10-28",
-    targetSubmitDate: "2026-10-28",
-    deadline: "2026-11-09",
-    notes: "Scrutiny in progress at Institute desk. Awaiting DTE nodal officer sign-off.",
-    progressPercent: 100,
-    timeline: [
-      { date: "2026-10-16", title: "Discovered", description: "State domicile priority matching" },
-      { date: "2026-10-28", title: "Submitted", description: "Applied on MahaDBT portal" },
-      { date: "2026-11-04", title: "College Verified", description: "PICT Principal desk approved verification" }
+      { date: "2026-10-18", title: "Discovered", description: "National quota compatibility" },
+      { date: "2026-10-24", title: "Documents Ready", description: "Income certificate verified" },
+      { date: "2026-11-01", title: "Application Submitted", description: "Application registered on NSP portal" }
     ]
   },
   {
@@ -122,10 +127,10 @@ export const INITIAL_APPLICATIONS = [
     appliedDate: null,
     targetSubmitDate: "2026-11-11",
     deadline: "2026-11-12",
-    notes: "Must review coding assessment syllabus before initiating formal application.",
-    progressPercent: 20,
+    notes: "Review coding assessment questions before initiating formal application.",
+    progressPercent: 25,
     timeline: [
-      { date: "2026-11-03", title: "Saved to Pipeline", description: "Added to exploration watchlist" }
+      { date: "2026-11-03", title: "Saved to Watchlist", description: "Tracked for software engineering priority" }
     ]
   }
 ];
@@ -135,10 +140,10 @@ export const INITIAL_DOCUMENTS = [
     id: "doc-1",
     name: "Latest Semester Marksheet (Sem 4 / 5)",
     type: "Academic",
-    status: "Ready", // Ready, Pending, Missing, Action Required
+    status: "Ready",
     lastUpdated: "2026-10-25",
     fileSize: "1.2 MB (PDF)",
-    notes: "Official signed grade sheet from university exam controller."
+    notes: "Official signed grade sheet from Gujarat Technological University."
   },
   {
     id: "doc-2",
@@ -147,7 +152,7 @@ export const INITIAL_DOCUMENTS = [
     status: "Ready",
     lastUpdated: "2026-10-20",
     fileSize: "850 KB (PDF)",
-    notes: "Issued by Pune Sub-Divisional Magistrate, valid until March 2027."
+    notes: "Issued by Mamlatdar Office, Dwarka, valid through March 2027."
   },
   {
     id: "doc-3",
@@ -156,34 +161,34 @@ export const INITIAL_DOCUMENTS = [
     status: "Ready",
     lastUpdated: "2026-10-22",
     fileSize: "620 KB (PDF)",
-    notes: "Current semester bonafide stating roll number and registration."
+    notes: "Current semester bonafide stating roll number and enrollment."
   },
   {
     id: "doc-4",
-    name: "State Domicile Certificate (Maharashtra)",
+    name: "State Domicile Certificate (Gujarat)",
     type: "Identity / Domicile",
     status: "Ready",
     lastUpdated: "2026-09-15",
     fileSize: "1.4 MB (PDF)",
-    notes: "Permanent domicile verification issued by Maha e-Seva."
+    notes: "Permanent Gujarat domicile verification."
   },
   {
     id: "doc-5",
-    name: "Faculty Letter of Recommendation (Prof. Kulkarni)",
+    name: "Faculty Letter of Recommendation",
     type: "Recommendation",
     status: "Pending",
     lastUpdated: "2026-11-04",
     fileSize: null,
-    notes: "Draft shared with professor; awaiting final signed letterhead copy."
+    notes: "Draft shared with department HOD; awaiting final letterhead copy."
   },
   {
     id: "doc-6",
-    name: "Nationalized Bank Account Passbook / Cancelled Cheque",
+    name: "Nationalized Bank Account Passbook",
     type: "Banking",
     status: "Ready",
     lastUpdated: "2026-10-20",
     fileSize: "500 KB (PDF)",
-    notes: "Aadhaar-seeded savings account with SBI Pune branch."
+    notes: "Aadhaar-seeded savings account with SBI Dwarka branch."
   },
   {
     id: "doc-7",
@@ -192,14 +197,14 @@ export const INITIAL_DOCUMENTS = [
     status: "Pending",
     lastUpdated: "2026-11-05",
     fileSize: null,
-    notes: "Working on 500-word draft highlighting AI & open source contributions."
+    notes: "Drafting 500-word essay highlighting cloud and AI contributions."
   }
 ];
 
 export const INITIAL_PLANNER_TASKS = [
   {
     id: "task-1",
-    title: "Obtain signed Letter of Recommendation from Prof. Kulkarni",
+    title: "Obtain signed Letter of Recommendation from Department HOD",
     category: "Documents",
     relatedScholarshipId: "sch-001",
     relatedScholarshipTitle: "Apex STEM Fellowship",
@@ -229,20 +234,20 @@ export const INITIAL_PLANNER_TASKS = [
   },
   {
     id: "task-4",
-    title: "Check MahaDBT portal for Institute desk approval updates",
+    title: "Verify MYSY Gujarat scrutiny status with college nodal officer",
     category: "Follow-up",
     relatedScholarshipId: "sch-004",
-    relatedScholarshipTitle: "Maharashtra State Scheme",
+    relatedScholarshipTitle: "MYSY Gujarat Scheme",
     dueDate: "2026-11-07",
     completed: true,
     priority: "Low"
   },
   {
     id: "task-5",
-    title: "Review eligibility for BioSciences grant with academic advisor",
+    title: "Review eligibility for Digital Gujarat textbook grant",
     category: "Exploration",
-    relatedScholarshipId: "sch-011",
-    relatedScholarshipTitle: "BioSciences Pioneers Grant",
+    relatedScholarshipId: "sch-006",
+    relatedScholarshipTitle: "Digital Gujarat Higher Education Grant",
     dueDate: "2026-11-15",
     completed: false,
     priority: "Low"
@@ -252,7 +257,7 @@ export const INITIAL_PLANNER_TASKS = [
 export const INITIAL_NOTIFICATIONS = [
   {
     id: "notif-1",
-    type: "urgent", // urgent, warning, success, info
+    type: "urgent",
     title: "Apex STEM Fellowship Deadline in 3 Days!",
     message: "Final date is November 10, 2026. You have 2 documents pending preparation.",
     date: "2 hours ago",
@@ -262,17 +267,17 @@ export const INITIAL_NOTIFICATIONS = [
   {
     id: "notif-2",
     type: "info",
-    title: "94% High Match Opportunity Discovered",
-    message: "Silicon Edge NextGen Software Engineers Award matches your CS major and 8.4 CGPA.",
+    title: "High Match Opportunity Identified",
+    message: "MYSY Gujarat Scheme matches your Dwarka, Gujarat domicile and 8.6 CGPA.",
     date: "1 day ago",
     read: false,
-    link: "/scholarship/sch-007"
+    link: "/scholarship/sch-004"
   },
   {
     id: "notif-3",
     type: "success",
-    title: "MahaDBT Scrutiny Progressed",
-    message: "Your application for Maharashtra State Assistance was verified by college principal.",
+    title: "MYSY Scrutiny Progressed",
+    message: "Your application for Gujarat Higher Education Assistance was verified by college desk.",
     date: "2 days ago",
     read: true,
     link: "/applications"

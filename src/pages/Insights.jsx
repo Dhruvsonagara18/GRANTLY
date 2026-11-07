@@ -26,7 +26,20 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import { useApp } from '../context/AppContext';
 
 export default function Insights() {
-  const { allScholarships, applications, savedIds, totalPotentialFunding } = useApp();
+  const { allScholarships, applications, savedIds, totalPotentialFunding, theme } = useApp();
+
+  const isDark = theme === 'dark';
+  const gridStroke = isDark ? '#334155' : '#F1F5F9';
+  const tickFill = isDark ? '#94A3B8' : '#64748B';
+  const tooltipStyle = {
+    backgroundColor: isDark ? '#0F172A' : '#FFFFFF',
+    borderColor: isDark ? '#334155' : '#E2E8F0',
+    color: isDark ? '#F8FAFC' : '#0F172A',
+    borderRadius: '12px',
+    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+    fontSize: '12px',
+    padding: '8px 12px'
+  };
 
   // 1. Scholarships by Category
   const categoryCounts = {};
@@ -73,59 +86,59 @@ export default function Insights() {
         {/* HEADER */}
         <div>
           <div className="flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-brand-600" />
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+            <BarChart3 className="w-5 h-5 text-brand-600 dark:text-brand-400" />
+            <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               Opportunity Insights & Analytics
             </h1>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Macro-level overview of funding distribution, eligibility cutoffs, and pipeline status
           </p>
         </div>
 
         {/* TOP METRICS SUMMARY */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Program Pool</p>
-            <p className="text-2xl font-black text-slate-900 mt-1">16 Endowments</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">National & State tiers</p>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs transition-colors">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Total Program Pool</p>
+            <p className="text-2xl font-black text-slate-900 dark:text-white mt-1">16 Endowments</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">National & State tiers</p>
           </div>
 
-          <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Award Ceiling</p>
-            <p className="text-2xl font-black text-brand-700 mt-1">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs transition-colors">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Total Award Ceiling</p>
+            <p className="text-2xl font-black text-brand-700 dark:text-brand-400 mt-1">
               ₹{(totalPotentialFunding / 100000).toFixed(1)} Lakhs
             </p>
-            <p className="text-[11px] text-emerald-600 mt-0.5 font-semibold">Eligible student fit</p>
+            <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-0.5 font-semibold">Eligible student fit</p>
           </div>
 
-          <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Active Pipelines</p>
-            <p className="text-2xl font-black text-indigo-700 mt-1">{applications.length} Submissions</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Tracked in lifecycle</p>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs transition-colors">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Active Pipelines</p>
+            <p className="text-2xl font-black text-indigo-700 dark:text-indigo-400 mt-1">{applications.length} Submissions</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Tracked in lifecycle</p>
           </div>
 
-          <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Watchlist Depth</p>
-            <p className="text-2xl font-black text-purple-700 mt-1">{savedIds.length} Saved</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Personal bookmarked</p>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs transition-colors">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Watchlist Depth</p>
+            <p className="text-2xl font-black text-purple-700 dark:text-purple-400 mt-1">{savedIds.length} Saved</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Personal bookmarked</p>
           </div>
         </div>
 
         {/* CHARTS GRID 1: Category Bar Chart & Education Pie Chart */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Chart 1: Category Distribution */}
-          <div className="lg:col-span-7 bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
-            <h3 className="font-bold text-slate-900 text-sm">
+          <div className="lg:col-span-7 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4 transition-colors">
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">
               Scholarships by Category
             </h3>
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={categoryData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
-                  <XAxis dataKey="name" tick={{ fontSize: 11 }} interval={0} angle={-10} textAnchor="end" />
-                  <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-                  <Tooltip />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridStroke} />
+                  <XAxis dataKey="name" tick={{ fontSize: 11, fill: tickFill }} interval={0} angle={-10} textAnchor="end" />
+                  <YAxis tick={{ fontSize: 11, fill: tickFill }} allowDecimals={false} />
+                  <Tooltip contentStyle={tooltipStyle} />
                   <Bar dataKey="count" fill="#6D28D9" radius={[6, 6, 0, 0]} barSize={36} />
                 </BarChart>
               </ResponsiveContainer>
@@ -133,8 +146,8 @@ export default function Insights() {
           </div>
 
           {/* Chart 2: Education Level Donut */}
-          <div className="lg:col-span-5 bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
-            <h3 className="font-bold text-slate-900 text-sm">
+          <div className="lg:col-span-5 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4 transition-colors">
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">
               Opportunities by Education Level
             </h3>
             <div className="h-64 w-full flex items-center justify-center">
@@ -153,7 +166,7 @@ export default function Insights() {
                       <Cell key={`cell-${index}`} fill={LEVEL_COLORS[index % LEVEL_COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip contentStyle={tooltipStyle} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -162,7 +175,7 @@ export default function Insights() {
               {levelData.map((d, i) => (
                 <div key={i} className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: LEVEL_COLORS[i % LEVEL_COLORS.length] }} />
-                  <span className="text-slate-600 font-medium">{d.name} ({d.value})</span>
+                  <span className="text-slate-600 dark:text-slate-300 font-medium">{d.name} ({d.value})</span>
                 </div>
               ))}
             </div>
@@ -172,17 +185,17 @@ export default function Insights() {
         {/* CHARTS GRID 2: Award Distribution & Application Pipeline */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Chart 3: Award Distribution */}
-          <div className="lg:col-span-6 bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
-            <h3 className="font-bold text-slate-900 text-sm">
+          <div className="lg:col-span-6 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4 transition-colors">
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">
               Award Amount Brackets
             </h3>
             <div className="h-60 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={awardDistribution} margin={{ top: 10, right: 10, left: -20, bottom: 10 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
-                  <XAxis dataKey="bracket" tick={{ fontSize: 11 }} />
-                  <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-                  <Tooltip />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridStroke} />
+                  <XAxis dataKey="bracket" tick={{ fontSize: 11, fill: tickFill }} />
+                  <YAxis tick={{ fontSize: 11, fill: tickFill }} allowDecimals={false} />
+                  <Tooltip contentStyle={tooltipStyle} />
                   <Bar dataKey="count" fill="#4F46E5" radius={[6, 6, 0, 0]} barSize={40} />
                 </BarChart>
               </ResponsiveContainer>
@@ -190,17 +203,17 @@ export default function Insights() {
           </div>
 
           {/* Chart 4: Student Application Pipeline Breakdown */}
-          <div className="lg:col-span-6 bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
-            <h3 className="font-bold text-slate-900 text-sm">
+          <div className="lg:col-span-6 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4 transition-colors">
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">
               Your Pipeline Status Breakdown
             </h3>
             <div className="h-60 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={appData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
-                  <XAxis dataKey="name" tick={{ fontSize: 10 }} interval={0} angle={-15} textAnchor="end" />
-                  <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-                  <Tooltip />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridStroke} />
+                  <XAxis dataKey="name" tick={{ fontSize: 10, fill: tickFill }} interval={0} angle={-15} textAnchor="end" />
+                  <YAxis tick={{ fontSize: 11, fill: tickFill }} allowDecimals={false} />
+                  <Tooltip contentStyle={tooltipStyle} />
                   <Bar dataKey="count" fill="#10B981" radius={[6, 6, 0, 0]} barSize={32} />
                 </BarChart>
               </ResponsiveContainer>

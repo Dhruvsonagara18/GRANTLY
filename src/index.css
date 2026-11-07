@@ -12,6 +12,12 @@
     background-color: #F8FAFC;
     color: #111827;
     overflow-x: hidden;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  html.dark body {
+    background-color: #0B0F19;
+    color: #F8FAFC;
   }
 }
 
@@ -25,18 +31,36 @@
   background: #F1F5F9;
 }
 
+html.dark ::-webkit-scrollbar-track {
+  background: #111827;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #CBD5E1;
   border-radius: 9999px;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
 }
 
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
 /* Glassmorphism helpers */
 .glass {
   background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+html.dark .glass {
+  background: rgba(19, 27, 46, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -55,8 +79,12 @@
   background: linear-gradient(135deg, #F5F3FF 0%, #EEF2FF 100%);
 }
 
+html.dark .gradient-brand-subtle {
+  background: linear-gradient(135deg, rgba(109, 40, 217, 0.15) 0%, rgba(79, 70, 229, 0.15) 100%);
+}
+
 .gradient-text {
-  background: linear-gradient(135deg, #6D28D9 0%, #4F46E5 100%);
+  background: linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

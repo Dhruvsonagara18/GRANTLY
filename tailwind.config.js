@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -25,6 +26,9 @@ export default {
         surface: {
           bg: '#F8FAFC',
           card: '#FFFFFF',
+          darkBg: '#0B0F19',
+          darkCard: '#131B2E',
+          darkBorder: '#1E293B',
         },
         primaryText: '#111827',
         secondaryText: '#64748B',
